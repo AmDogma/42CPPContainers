@@ -28,15 +28,14 @@ namespace ft {
         allocator_type	_alloc;
         pointer         _pointer;
     public:
+        /* Constructors and destructor */
         explicit vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc), _pointer(NULL), _size(0), _capacity(0) {
         }
+//        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(n), _capacity(n), _pointer(_alloc.allocate(_capacity)) {
+//            this->insert(begin(), _capacity, val);
+//        }
 
-        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(n) {
-            _pointer = _alloc.allocate(_capacity);
-            
-        }
-
-        // нужны еще 2 конструкора судя по документации
+        // 2 more constr
         // range (3)
         //template <class InputIterator>
         //         vector (InputIterator first, InputIterator last,
@@ -45,68 +44,104 @@ namespace ft {
         //vector (const vector& x);
 
         ~vector() {
-            delete[] v_data; // maybe need to call destructor for each element
+            clear();
+            _alloc.deallocate(_pointer, _capacity);
         }
-
-        /* Member functions */
-
-        T &operator=(T const &other) {
-            v_capacity = other.capacity();
-            ReAlloc(v_capacity);
-            v_size = other.size();
-            for (size_t i = 0; i < v_size; i++)
-                v_data[i] = other[i];
-            // need to check!
+        /* Operator =  */
+        vector& operator= (const vector& x) {
+           if (*this == x)
+               return *this;
+           clear();
+           _alloc.deallocate(_pointer, _capacity);
+           _capacity = x.capacity();
+           _size = x.size();
+           _pointer = _alloc.allocate(_capacity);
+           for (size_t i = 0; i < _size; i++)
+               _pointer[i] = x[i];
+           // need to check!
         }
-
         /* Iterators */
-
-        //
-        //
+        // ??
 
         /* Capacity */
-
-        size_t size() {
-            return (v_size);
+        size_type size() const {
+           return (_size);
         }
-
-//    size_t max_size() {
-//        return(v_size.max_size());
-//    }
-
-        size_t capacity() {
-            return (v_capacity);
+        size_type max_size() const {
+           return (_alloc.max_size());
         }
-
-
-        T &operator[](size_t index) {
-            if (index < v_size)
-                return (v_data[index]); // some else option, exception case maybe
+        size_t capacity() const {
+          return (_capacity);
         }
-
-        const T &operator[](size_t index) const {
-            if (index < v_size)
-                return (v_data[index]); // some else option, exception case maybe
+        bool        empty () const {
+           return (size() == 0);
         }
-
-        void push_back(T newElement) {
-            if (v_size == v_capacity)
-                ReAlloc(v_capacity * 2);
-            v_data[v_size] = newElement;
-            v_size++;
+        /*	Element access	*/
+        reference operator[](size_type n) {
+           return (*(_pointer + n));
         }
-
+        const_reference operator[](size_type n) const {
+           return (*(_pointer + n));
+        }
+        reference at (size_type n) {
+           if (n > _size)
+               throw std::out_of_range("N > SIZE");
+           return _pointer[n];
+        }
+        const_reference at (size_type n) const {
+           if (n > _size)
+               throw std::out_of_range("N > SIZE");
+           return _pointer[n];
+        }
+        reference front () {
+           return _pointer[0];
+        }
+        const_reference front () const {
+           return _pointer[0];
+        }
+        reference back () {
+          return _pointer[_size - 1];
+        }
+        const_reference back () const {
+           return _pointer[_size - 1];
+        }
+        /* Modifiers */
+        template <class InputIterator>
+            void assign (InputIterator first, InputIterator last) {
+//          need to fill
+            }
+        void assign (size_type n, const value_type& val) {
+//          need to fill
+        }
+        void push_back (const value_type& val) {
+//          need to fill
+        }
+//        iterator insert (iterator position, const value_type& val) {
+//            //          need to fill
+//        }
+//        void insert (iterator position, size_type n, const value_type& val) {
+//            //          need to fill
+//        }
+//        template <class InputIterator>
+//            void insert (iterator position, InputIterator first, InputIterator last) {
+//            //          need to fill
+//            }
+        void clear() {
+            for (size_type i = 0; i < _size; i++)
+                _alloc.destroy(_pointer + i);
+            _size = 0;
+        }
     private:
         void ReAlloc(size_t newCapacity) {
             T *newData = new T[newCapacity];
-            if (v_size > newCapacity) // do we need decreasing?
-                v_size = newCapacity;
-            for (size_t i = 0; i < v_size; i++)
-                newData[i] = v_data[i];
-            if (v_data)
-                delete[] v_data;
-            v_data = newData;
-            v_capacity = newCapacity;
+            if (_size > newCapacity) // do we need decreasing?
+                _size = newCapacity;
+            for (size_t i = 0; i < _size; i++)
+                newData[i] = _pointer[i];
+            if (_pointer)
+                delete[] _pointer;
+            _pointer = newData;
+            _capacity = newCapacity;
         }
     };
 }
