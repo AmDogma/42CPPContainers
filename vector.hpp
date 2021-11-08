@@ -3,25 +3,52 @@
 
 #include <sys/types.h>
 #include <iostream>
+#include <iterator>
+#include <vector>
 
 namespace ft {
     template<class T, class Allocator = std::allocator<T> >
-    class Vector {
-    private:
-        std::size_t v_size;
-        size_t v_capacity;
-        T *v_data;
+    class vector {
     public:
-
-        /* Member functions */
-
-        Vector() : v_data(nullptr), v_size(0), v_capacity(0) {
-            ReAlloc(2);
+        typedef T   value_type;
+        typedef Allocator allocator_type;
+        typedef typename allocator_type::reference reference;
+        typedef typename allocator_type::pointer pointer;
+        typedef typename allocator_type::const_reference const_reference;
+        typedef typename allocator_type::const_pointer const_pointer;
+//        typedef ft::vector_iterator<T *>	iterator;
+//        typedef ft::vector_iterator<const T *>	const_iterator;
+//        typedef ft::reverse_iterator<iterator>	reverse_iterator;
+//        typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+//        typedef typename iterator_traits<iterator>::difference_type	difference_type;
+        typedef size_t	size_type;
+    private:
+        size_type       _size;
+        size_type       _capacity;
+        allocator_type	_alloc;
+        pointer         _pointer;
+    public:
+        explicit vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc), _pointer(NULL), _size(0), _capacity(0) {
         }
 
-        ~Vector() {
+        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(n) {
+            _pointer = _alloc.allocate(_capacity);
+            
+        }
+
+        // нужны еще 2 конструкора судя по документации
+        // range (3)
+        //template <class InputIterator>
+        //         vector (InputIterator first, InputIterator last,
+        //                 const allocator_type& alloc = allocator_type());
+        //copy (4)
+        //vector (const vector& x);
+
+        ~vector() {
             delete[] v_data; // maybe need to call destructor for each element
         }
+
+        /* Member functions */
 
         T &operator=(T const &other) {
             v_capacity = other.capacity();

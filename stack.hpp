@@ -6,7 +6,7 @@
 #include "vector.hpp"
 
 namespace ft{
-    template <class T, class Container = std::vector<T> >
+    template <class T, class Container = std::vector<T> > // need to delete after change to ft::vector
     class stack {
         typedef T                value_type;
         typedef Container    container_type; //

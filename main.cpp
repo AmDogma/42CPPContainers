@@ -7,7 +7,7 @@
 int main() {
 
     std::vector<int> realVector(22);
-    ft::Vector<int> myVector;
+    ft::vector<int> myVector;
     std::cout << myVector.size() << std::endl;
 
     std::stack<int, std::vector<int> > stackVector;
