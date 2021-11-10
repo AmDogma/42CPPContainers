@@ -1,6 +1,4 @@
-#ifndef STACK_HPP
-#define STACK_HPP
-
+#pragma once
 #include <iostream>
 #include <vector> // need to delete after change to ft::vector
 #include "vector.hpp"
@@ -32,5 +30,3 @@ namespace ft{
         container_type container;
     };
 }
-
-#endif

@@ -1,9 +1,7 @@
-#ifndef VECTOR_HPP
-#define VECTOR_HPP
-
+#pragma once
 #include <sys/types.h>
 #include <iostream>
-#include <iterator>
+
 #include <vector>
 
 namespace ft {
@@ -16,8 +14,8 @@ namespace ft {
         typedef typename allocator_type::pointer pointer;
         typedef typename allocator_type::const_reference const_reference;
         typedef typename allocator_type::const_pointer const_pointer;
-//        typedef ft::vector_iterator<T *>	iterator;
-//        typedef ft::vector_iterator<const T *>	const_iterator;
+//        typedef ft::iterator_vector<T *>	iterator;
+//        typedef ft::iterator_vector<const T *>	const_iterator;
 //        typedef ft::reverse_iterator<iterator>	reverse_iterator;
 //        typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 //        typedef typename iterator_traits<iterator>::difference_type	difference_type;
@@ -116,14 +114,14 @@ namespace ft {
         void push_back (const value_type& val) {
 //          need to fill
         }
-//        iterator insert (iterator position, const value_type& val) {
+//        iterator_traits insert (iterator_traits position, const value_type& val) {
 //            //          need to fill
 //        }
-//        void insert (iterator position, size_type n, const value_type& val) {
+//        void insert (iterator_traits position, size_type n, const value_type& val) {
 //            //          need to fill
 //        }
 //        template <class InputIterator>
-//            void insert (iterator position, InputIterator first, InputIterator last) {
+//            void insert (iterator_traits position, InputIterator first, InputIterator last) {
 //            //          need to fill
 //            }
         void clear() {
@@ -146,4 +144,3 @@ namespace ft {
     };
 }
 
-#endif
