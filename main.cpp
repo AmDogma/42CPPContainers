@@ -7,24 +7,34 @@
 
 int main() {
 
-    std::vector<int> realVector(22);
-    std::vector<int>::iterator it = realVector.begin();
-    ft::vector<int> myVector;
-    std::cout << myVector.size() << std::endl;
-
+    std::vector<int> realVector;
     std::stack<int, std::vector<int> > stackVector;
+
+    ft::vector<int> myVector;
     ft::stack<int> myStack;
 
-    myStack.push(22);
-    stackVector.push(33);
+    realVector.push_back(56); realVector.push_back(57); realVector.push_back(58); realVector.push_back(59);
+    stackVector.push(33); stackVector.push(34);stackVector.push(35);stackVector.push(36);stackVector.push(37);stackVector.push(38);
 
-    std::cout << stackVector.top() << " stackVector" << std::endl;
-    std::cout << myStack.top() << " myStack" << std::endl;
-    int iiii(42);
-    int i = int(5);
-    int i1 = i();
+    myVector.push_back(45);myVector.push_back(46);myVector.push_back(477);myVector.push_back(48);
+    myStack.push(22); myStack.push(23); myStack.push(24); myStack.push(25); myStack.push(26);
 
-    std::cout << i << "\n";
+    std::vector<int>::iterator it = realVector.begin();
+    ft::vector<int>::iterator myIt = myVector.begin();
+
+//    std::cout << *myIt << " myIt" << std::endl;
+    std::cout << *it << " it" << std::endl;
+
+    std::cout << myVector.size() << " myVector.size()" << std::endl;
+    std::cout << realVector.size() << " realVector.size()" << std::endl;
+
+    std::cout << stackVector.top() << " stackVector.top()" << std::endl;
+    std::cout << myStack.top() << " myStack.top()" << std::endl;
+
+//    resize()
+    std::cout << realVector.size() << std::endl;
+    realVector.resize(3);
+    std::cout << realVector.size() << std::endl;
 
     return 0;
 }

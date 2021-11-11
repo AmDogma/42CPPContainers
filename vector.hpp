@@ -1,7 +1,7 @@
 #pragma once
 #include <sys/types.h>
 #include <iostream>
-
+#include "iterator_vector.hpp"
 #include <vector>
 
 namespace ft {
@@ -14,11 +14,11 @@ namespace ft {
         typedef typename allocator_type::pointer pointer;
         typedef typename allocator_type::const_reference const_reference;
         typedef typename allocator_type::const_pointer const_pointer;
-//        typedef ft::iterator_vector<T *>	iterator;
-//        typedef ft::iterator_vector<const T *>	const_iterator;
+        typedef ft::iterator_vector<T *>	iterator;
+        typedef ft::iterator_vector<const T *>	const_iterator;
 //        typedef ft::reverse_iterator<iterator>	reverse_iterator;
 //        typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-//        typedef typename iterator_traits<iterator>::difference_type	difference_type;
+        typedef typename iterator_traits<iterator>::difference_type	difference_type;
         typedef size_t	size_type;
     private:
         size_type       _size;
@@ -45,22 +45,31 @@ namespace ft {
             clear();
             _alloc.deallocate(_pointer, _capacity);
         }
-        /* Operator =  */
+        /* Operator=  */
         vector& operator= (const vector& x) {
            if (*this == x)
                return *this;
-           clear();
-           _alloc.deallocate(_pointer, _capacity);
-           _capacity = x.capacity();
-           _size = x.size();
-           _pointer = _alloc.allocate(_capacity);
-           for (size_t i = 0; i < _size; i++)
+           clear();// need to insert and think about capacity and size
+           _alloc.deallocate(_pointer, _capacity);// need to insert and think about capacity and size
+           _capacity = x.capacity();// need to insert and think about capacity and size
+           _size = x.size();// need to insert and think about capacity and size
+           _pointer = _alloc.allocate(_capacity);// need to insert and think about capacity and size
+           for (size_t i = 0; i < _size; i++)  // need to insert and think about capacity and size
                _pointer[i] = x[i];
-           // need to check!
         }
         /* Iterators */
-        // ??
-
+        iterator begin() {
+            return iterator(_pointer);
+        }
+        iterator end() {
+            return iterator(_pointer + _size);
+        }
+        const_iterator begin() const {
+            return iterator(_pointer);
+        }
+        const_iterator end() const {
+            return iterator(_pointer + _size);
+        }
         /* Capacity */
         size_type size() const {
            return (_size);
@@ -106,41 +115,54 @@ namespace ft {
         /* Modifiers */
         template <class InputIterator>
             void assign (InputIterator first, InputIterator last) {
-//          need to fill
+            std::cout << "Need to fill\n";
             }
         void assign (size_type n, const value_type& val) {
-//          need to fill
+          std::cout << "Need to fill\n";
         }
         void push_back (const value_type& val) {
-//          need to fill
+          std::cout << "Need to fill\n";
         }
-//        iterator_traits insert (iterator_traits position, const value_type& val) {
-//            //          need to fill
-//        }
-//        void insert (iterator_traits position, size_type n, const value_type& val) {
-//            //          need to fill
-//        }
-//        template <class InputIterator>
-//            void insert (iterator_traits position, InputIterator first, InputIterator last) {
-//            //          need to fill
-//            }
+        void reserve(size_type newCapacity) {
+            if (newCapacity > max_size())
+                throw std::length_error("Vector capacity out of max_size!");
+            else if (_capacity < newCapacity) {
+                size_type sizeTwice = _size * 2;
+                if (newCapacity < sizeTwice && sizeTwice < max_size())
+                    newCapacity = sizeTwice;
+                pointer temp = _pointer;
+                _pointer = _alloc.allocate(newCapacity);
+                for (size_type i = 0; i < _size; ++i) {
+                    _alloc.construct(_pointer + i, temp[i]);
+                    _alloc.destroy(temp + i);
+                }
+                _alloc.deallocate(temp, _capacity);
+                _capacity = newCapacity;
+            }
+        }
+        void resize (size_type n, value_type val = value_type()) {
+            if (n > _size)
+                insert(end(), n - _size, val);
+            else if (n < _size)
+                for (_size; _size > n; --_size)
+                    _alloc.destroy(_pointer + (_size - 1));
+        }
+        iterator insert (iterator position, const value_type& val) { // нужно с position вставить val, таким образом двигая предыдущее содержимое которое находилось после position
+            std::cout << "Need to fill\n";
+        }
+        void insert (iterator position, size_type n, const value_type& val) {
+            std::cout << "Need to fill\n";
+        }
+        template <class InputIterator>
+        void insert (iterator position, InputIterator first, InputIterator last) {
+            std::cout << "Need to fill\n";
+        }
         void clear() {
-            for (size_type i = 0; i < _size; i++)
-                _alloc.destroy(_pointer + i);
-            _size = 0;
+            for (; _size; --_size)
+                _alloc.destroy(_pointer + (_size - 1));
         }
     private:
-        void ReAlloc(size_t newCapacity) {
-            T *newData = new T[newCapacity];
-            if (_size > newCapacity) // do we need decreasing?
-                _size = newCapacity;
-            for (size_t i = 0; i < _size; i++)
-                newData[i] = _pointer[i];
-            if (_pointer)
-                delete[] _pointer;
-            _pointer = newData;
-            _capacity = newCapacity;
-        }
+
     };
 }
 
