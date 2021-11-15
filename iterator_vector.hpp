@@ -5,14 +5,14 @@ namespace ft {
     template <class T>
     class iterator_vector {
     private:
-        typedef iterator_traits<T> _type;
+        typedef iterator_traits<T> iterator_type;
     public:
         T _point; // ?? private
-        typedef typename _type::value_type      value_type;
-        typedef typename _type::difference_type difference_type;
-        typedef typename _type::pointer         pointer;
-        typedef typename _type::reference       reference;
-        typedef random_access_iterator_tag      iterator_category;
+        typedef typename iterator_type::value_type         value_type;
+        typedef typename iterator_type::difference_type    difference_type;
+        typedef typename iterator_type::pointer            pointer;
+        typedef typename iterator_type::reference          reference;
+        typedef typename iterator_type::iterator_category  iterator_category;
     public:
         iterator_vector() : _point(T()) {}
 
@@ -21,7 +21,7 @@ namespace ft {
         iterator_vector(const iterator_vector &it) : _point(it._point) {}
         ~iterator_vector() {}
 //
-//        const pointer val() const { // need be protected or can
+//        const pointer base() const { // need be protected or can
 //            return _point;
 //        }
         /* operators */
@@ -39,13 +39,13 @@ namespace ft {
         }
 
         iterator_vector operator++(int) {
-            iterator_vector<value_type> temp(*this); // value_type like T
+            iterator_vector temp(*this); // value_type like T
             ++_point;
             return temp;
         }
 
         iterator_vector operator+(difference_type n) const {
-            return iterator_vector<T>(this->_point + n);
+            return iterator_vector(_point + n);
         }
 
         iterator_vector operator+=(difference_type n) {
@@ -59,13 +59,13 @@ namespace ft {
         }
 
         iterator_vector operator--(int) {
-            iterator_vector<value_type> temp(*this); // value_type like T
+            iterator_vector temp(*this);
             --_point;
             return temp;
         }
 
         iterator_vector operator-(difference_type n) const {
-            return iterator_vector<value_type>(_point - n);
+            return iterator_vector(_point - n);
         }
 
         iterator_vector operator-=(difference_type n) {
@@ -76,8 +76,6 @@ namespace ft {
         reference operator[](difference_type n) {
             return *(*this + n);
         }
-
-
 
     };
     template <class Iterator>

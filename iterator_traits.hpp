@@ -30,7 +30,8 @@ namespace ft {
             typedef Pointer     pointer;
             typedef Reference   reference;
         };
-    template< class T >
+
+    template <class T>
         struct iterator_traits<T*> {
             typedef ptrdiff_t	difference_type;
             typedef T           value_type;
@@ -38,7 +39,8 @@ namespace ft {
             typedef T&	        reference;
             typedef random_access_iterator_tag	iterator_category;
         };
-    template< class T >
+
+    template<class T>
         struct iterator_traits<const T*> {
             typedef ptrdiff_t	difference_type;
             typedef T           value_type;

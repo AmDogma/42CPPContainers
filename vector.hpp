@@ -44,6 +44,7 @@ namespace ft {
             clear();
             _alloc.deallocate(_pointer, _capacity);
         }
+
         /* Operator=  */
         vector& operator= (const vector& x) {
            if (*this == x)
@@ -56,69 +57,105 @@ namespace ft {
            for (size_t i = 0; i < _size; i++)  // need to insert and think about capacity and size
                _pointer[i] = x[i]; // it is ok?
         }
+
         /* Iterators */
         iterator begin() {
             return iterator(_pointer);
         }
+
         iterator end() {
             return iterator(_pointer + _size);
         }
+
         const_iterator begin() const {
             return iterator(_pointer);
         }
+
         const_iterator end() const {
             return iterator(_pointer + _size);
         }
+
+//        iterator rbegin() {
+//
+//            return iterator(_pointer);
+//        }
+//
+//        iterator rend() {
+//            return iterator(_pointer + _size);
+//        }
+//
+//        const_iterator rbegin() const {
+//            return iterator(_pointer);
+//        }
+//
+//        const_iterator rend() const {
+//            return iterator(_pointer + _size);
+//        }
+
         /* Capacity */
         size_type size() const {
            return (_size);
         }
+
         size_type max_size() const {
            return (_alloc.max_size());
         }
+
         size_t capacity() const {
           return (_capacity);
         }
+
         bool        empty () const {
            return (size() == 0);
         }
+
         /*	Element access	*/
         reference operator[](size_type n) {
            return (*(_pointer + n));
         }
+
         const_reference operator[](size_type n) const {
            return (*(_pointer + n));
         }
+
         reference at (size_type n) {
            if (n > _size)
                throw std::out_of_range("N > SIZE");
            return _pointer[n];
         }
+
         const_reference at (size_type n) const {
            if (n > _size)
                throw std::out_of_range("N > SIZE");
            return _pointer[n];
         }
+
         reference front () {
            return _pointer[0];
         }
+
         const_reference front () const {
            return _pointer[0];
         }
+
         reference back () {
           return _pointer[_size - 1];
         }
+
         const_reference back () const {
            return _pointer[_size - 1];
         }
+
         /* Modifiers */
         template <class InputIterator>
             void assign (InputIterator first, InputIterator last) {
             std::cout << "Need to fill\n";
             }
+
         void assign (size_type n, const value_type& val) {
           std::cout << "Need to fill\n";
         }
+
         void reserve(size_type newCapacity) {
             if (newCapacity > max_size())
                 throw std::length_error("Vector capacity out of max_size!");
@@ -136,6 +173,7 @@ namespace ft {
                 _capacity = newCapacity;
             }
         }
+
         void resize (size_type n, value_type val = value_type()) {
             if (n > _size)
                 insert(end(), n - _size, val);
@@ -143,41 +181,75 @@ namespace ft {
                 for (_size; _size > n; --_size)
                     _alloc.destroy(_pointer + (_size - 1));
         }
+
         void push_back (const value_type& val) {
             reserve(_size + 1);
             _alloc.construct(_pointer + _size, val);
             _size++;
         }
+
         iterator insert (iterator position, const value_type& val) {
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
-//            if (position > end() && position < begin())
-//                throw std::logic_error("Insert position fail!"); // do we need care this?
+            if (position > end() && position < begin())
+                throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + 1);
-//            if (position == end())
-//                push_back(val);
-//            else {
-                for (size_type i = 0; _size - i != dis; ++i)
+            for (size_type i = 0; _size - i != dis; ++i)
                     _pointer[_size - i] = _pointer[_size - i - 1];
-                _alloc.construct(_pointer + dis, val);
-                _size++;
-//            }
+            _alloc.construct(_pointer + dis, val);
+
             return iterator(begin() + dis);
         }
+
         void insert (iterator position, size_type n, const value_type& val) {
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
             if (position > end() && position < begin())
-                throw std::logic_error("Insert position fail!"); // do we need care this?
+                throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + n);
             for (size_type i = 0; _size - i != dis; ++i)
-                _pointer[_size - i + n] = _pointer[_size - i - 1 + n];
+                _pointer[_size - i + n] = _pointer[_size - i - 1];
             for (size_type i = 0; i < n; i++) {
-                std::cout << "Need to fill\n";
+                _alloc.construct(_pointer + dis + i, val);
+                _size++;
             }
         }
+
         template <class InputIterator>
-        void insert (iterator position, InputIterator first, InputIterator last) {
-            std::cout << "Need to fill\n";
+        void insert (iterator position, InputIterator first, InputIterator last, char (*)[sizeof(*first)] = NULL) {
+            size_type n = static_cast<size_type>(ft::distance(first, last));
+            size_type dis = static_cast<size_type>(ft::distance(begin(), position));
+            reserve(_size + n);
+            for (size_type i = 0; _size - i != dis; ++i)
+                _pointer[_size - i + n] = _pointer[_size - i - 1];
+            for (size_type i = 0; i < n; i++) {
+                _alloc.construct(_pointer + dis + i, *first++);
+                _size++;
+            }
         }
+
+        iterator erase (iterator position) {
+            size_type dis = static_cast<size_type>(ft::distance(begin(), position));
+            if (_size == 0)
+                return end();
+            _alloc.destroy(_pointer + dis);
+            for (size_type i = 0; dis + i != _size; ++i)
+                _pointer[dis + i] = _pointer[dis + i + 1];
+            _size--;
+            return (begin() + dis);
+        }
+
+        iterator erase (iterator first, iterator last) {
+            size_type n = static_cast<size_type>(ft::distance(first, last));
+            size_type dis = static_cast<size_type>(ft::distance(begin(), first));
+            if (_size == 0)
+                return end();
+            for (size_type i = 0; i != n; ++i)
+                _alloc.destroy(_pointer + dis + i);
+            for (size_type i = 0; dis + i != _size; ++i)
+                _pointer[dis + i] = _pointer[dis + i + n];
+            _size -= n;
+            return (begin() + dis);
+        }
+
         void clear() {
             for (; _size; --_size)
                 _alloc.destroy(_pointer + (_size - 1));
