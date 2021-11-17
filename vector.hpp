@@ -13,8 +13,8 @@ namespace ft {
         typedef typename allocator_type::pointer pointer;
         typedef typename allocator_type::const_reference const_reference;
         typedef typename allocator_type::const_pointer const_pointer;
-        typedef ft::iterator_vector<pointer>	    iterator;
-        typedef ft::iterator_vector<const_pointer>	const_iterator;
+        typedef ft::iterator_vector<T *>	    iterator;
+        typedef ft::iterator_vector<const T *>	const_iterator;
 //        typedef ft::reverse_iterator<iterator>	reverse_iterator;
 //        typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
         typedef typename iterator_traits<iterator>::difference_type	difference_type;
@@ -28,17 +28,25 @@ namespace ft {
         /* Constructors and destructor */
         explicit vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc), _pointer(NULL), _size(0), _capacity(0) {
         }
-//        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(n), _capacity(n), _pointer(_alloc.allocate(_capacity)) {
-//            this->insert(begin(), _capacity, val);
-//        }
 
-        // 2 more constr
-        // range (3)
-        //template <class InputIterator>
-        //         vector (InputIterator first, InputIterator last,
-        //                 const allocator_type& alloc = allocator_type());
-        //copy (4)
-        //vector (const vector& x);
+        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0), _pointer(NULL) {
+            this->insert(begin(), n, val);
+        }
+
+        template <class InputIterator>
+                 vector (InputIterator first, InputIterator last,
+                         const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0), _pointer(NULL) {
+            this->insert(begin(), first, last);
+
+        }
+
+        vector (const vector& x) {
+            clear();
+            _alloc.deallocate(_pointer, _capacity);
+            _capacity = x.capacity();
+            _pointer = _alloc.allocate(_capacity);
+            insert(begin(), x.begin(), x.end());
+        }
 
         ~vector() {
             clear();
@@ -49,13 +57,11 @@ namespace ft {
         vector& operator= (const vector& x) {
            if (*this == x)
                return *this;
-           clear();// need to insert and think about capacity and size
-           _alloc.deallocate(_pointer, _capacity);// need to insert and think about capacity and size
-           _capacity = x.capacity();// need to insert and think about capacity and size
-           _size = x.size();// need to insert and think about capacity and size
-           _pointer = _alloc.allocate(_capacity);// need to insert and think about capacity and size
-           for (size_t i = 0; i < _size; i++)  // need to insert and think about capacity and size
-               _pointer[i] = x[i]; // it is ok?
+           clear();
+           _alloc.deallocate(_pointer, _capacity);
+           _capacity = x.capacity();
+           _pointer = _alloc.allocate(_capacity);
+           insert(begin(), x.begin(), x.end());
         }
 
         /* Iterators */
@@ -92,7 +98,7 @@ namespace ft {
 //            return iterator(_pointer + _size);
 //        }
 
-        /* Capacity */
+        /* Getters */
         size_type size() const {
            return (_size);
         }
@@ -149,11 +155,13 @@ namespace ft {
         /* Modifiers */
         template <class InputIterator>
             void assign (InputIterator first, InputIterator last) {
-            std::cout << "Need to fill\n";
+                clear();
+                insert(begin(), first, last);
             }
 
         void assign (size_type n, const value_type& val) {
-          std::cout << "Need to fill\n";
+            clear();
+            insert(begin(), n, val);
         }
 
         void reserve(size_type newCapacity) {
@@ -165,8 +173,8 @@ namespace ft {
                     newCapacity = sizeTwice;
                 pointer temp = _pointer;
                 _pointer = _alloc.allocate(newCapacity);
-                for (size_type i = 0; i < _size; ++i) { // просто перенести указатели разве нельзя?
-                    _alloc.construct(_pointer + i, temp[i]);
+                for (size_type i = 0; i < _size; ++i) {
+                    _alloc.construct (_pointer + i, temp[i]);
                     _alloc.destroy(temp + i);
                 }
                 _alloc.deallocate(temp, _capacity);
@@ -188,15 +196,24 @@ namespace ft {
             _size++;
         }
 
+        void pop_back() {
+            if (_size) {
+                _size--;
+                _alloc.destroy(_pointer + _size);
+            }
+        }
+
         iterator insert (iterator position, const value_type& val) {
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
             if (position > end() && position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
-            reserve(_size + 1);
-            for (size_type i = 0; _size - i != dis; ++i)
-                    _pointer[_size - i] = _pointer[_size - i - 1];
+            reserve(_size + 1); // для ускорения возможно нужно сделать обе операции тут индивидуально
+            for (size_type i = 0; _size - i != dis; ++i) {
+                _alloc.construct(_pointer + _size - i, _pointer[_size - i - 1]);
+                _alloc.destroy(_pointer + _size - i - 1);
+            }
             _alloc.construct(_pointer + dis, val);
-
+            _size++;
             return iterator(begin() + dis);
         }
 
@@ -204,9 +221,11 @@ namespace ft {
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
             if (position > end() && position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
-            reserve(_size + n);
-            for (size_type i = 0; _size - i != dis; ++i)
-                _pointer[_size - i + n] = _pointer[_size - i - 1];
+            reserve(_size + n); // для ускорения возможно нужно сделать обе операции тут индивидуально
+            for (size_type i = 0; _size - i != dis; ++i) {
+                _alloc.construct(_pointer + _size - i + n, _pointer[_size - i - 1]);
+                _alloc.destroy(_pointer + _size - i - 1);
+            }
             for (size_type i = 0; i < n; i++) {
                 _alloc.construct(_pointer + dis + i, val);
                 _size++;
@@ -217,9 +236,13 @@ namespace ft {
         void insert (iterator position, InputIterator first, InputIterator last, char (*)[sizeof(*first)] = NULL) {
             size_type n = static_cast<size_type>(ft::distance(first, last));
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
-            reserve(_size + n);
-            for (size_type i = 0; _size - i != dis; ++i)
-                _pointer[_size - i + n] = _pointer[_size - i - 1];
+            if (position > end() && position < begin())
+                throw std::logic_error("Insert position fail!"); // do we care?
+            reserve(_size + n);  // для ускорения возможно нужно сделать обе операции тут индивидуально
+            for (size_type i = 0; _size - i != dis; ++i){
+                _alloc.construct(_pointer + _size - i + n, _pointer[_size - i - 1]);
+                _alloc.destroy(_pointer + _size - i - 1);
+            }
             for (size_type i = 0; i < n; i++) {
                 _alloc.construct(_pointer + dis + i, *first++);
                 _size++;
@@ -230,9 +253,10 @@ namespace ft {
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
             if (_size == 0)
                 return end();
-            _alloc.destroy(_pointer + dis);
-            for (size_type i = 0; dis + i != _size; ++i)
-                _pointer[dis + i] = _pointer[dis + i + 1];
+            for (size_type i = 0; dis + i != _size; ++i) {
+                _alloc.construct(_pointer + dis + i, _pointer[dis + i + 1]);
+                _alloc.destroy(_pointer + dis + i + 1);
+            }
             _size--;
             return (begin() + dis);
         }
@@ -244,8 +268,10 @@ namespace ft {
                 return end();
             for (size_type i = 0; i != n; ++i)
                 _alloc.destroy(_pointer + dis + i);
-            for (size_type i = 0; dis + i != _size; ++i)
-                _pointer[dis + i] = _pointer[dis + i + n];
+            for (size_type i = 0; dis + i != _size; ++i) {
+                _alloc.construct(_pointer + dis + i, _pointer[dis + i + n]);
+                _alloc.destroy(_pointer + dis + i + n);
+            }
             _size -= n;
             return (begin() + dis);
         }
@@ -253,6 +279,21 @@ namespace ft {
         void clear() {
             for (; _size; --_size)
                 _alloc.destroy(_pointer + (_size - 1));
+        }
+
+        void swap(vector& other) {
+          allocator_type    alloc = _alloc;
+          pointer           pointer = _pointer;
+          size_type         size = _size;
+          size_type         capacity = _capacity;
+          _alloc = other._alloc;
+          _pointer = other._pointer;
+          _size = other._size;
+          _capacity = other._capacity;
+          other._alloc = alloc;
+          other._pointer = pointer;
+          other._size = size;
+          other._capacity = capacity;
         }
      };
 }

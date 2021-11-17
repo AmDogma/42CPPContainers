@@ -7,12 +7,13 @@ namespace ft {
     private:
         typedef iterator_traits<T> iterator_type;
     public:
-        T _point; // ?? private
         typedef typename iterator_type::value_type         value_type;
         typedef typename iterator_type::difference_type    difference_type;
         typedef typename iterator_type::pointer            pointer;
         typedef typename iterator_type::reference          reference;
         typedef typename iterator_type::iterator_category  iterator_category;
+    private:
+        T _point;
     public:
         iterator_vector() : _point(T()) {}
 
@@ -20,10 +21,18 @@ namespace ft {
 
         iterator_vector(const iterator_vector &it) : _point(it._point) {}
         ~iterator_vector() {}
-//
-//        const pointer base() const { // need be protected or can
-//            return _point;
-//        }
+
+        template <class Type>
+        operator iterator_vector<Type>() const {
+            return iterator_vector<Type>(_point);
+        }
+
+        template <class Iter>
+        iterator_vector&	operator=(iterator_vector<Iter> const & other) {
+            _point = &(*other);
+            return *this;
+        }
+
         /* operators */
         reference operator*() const {
             return(*(_point));
@@ -39,7 +48,7 @@ namespace ft {
         }
 
         iterator_vector operator++(int) {
-            iterator_vector temp(*this); // value_type like T
+            iterator_vector temp(*this);
             ++_point;
             return temp;
         }
@@ -77,6 +86,21 @@ namespace ft {
             return *(*this + n);
         }
 
+//        ??
+        template <class Iterator>
+        friend bool	operator==(const iterator_vector<Iterator>& A, const iterator_vector<Iterator>& B);
+
+        template <class Iterator1, class Iterator2>
+        friend bool	operator==(const iterator_vector<Iterator1>& A, const iterator_vector<Iterator2>& B);
+
+        template <class Iterator1, class Iterator2>
+        friend bool	operator>(const iterator_vector<Iterator1>& A, const iterator_vector<Iterator2>& B);
+
+        template <class Iterator1, class Iterator2>
+        friend bool	operator<(const iterator_vector<Iterator1>& A, const iterator_vector<Iterator2>& B);
+
+        template <class Iterator>
+        friend  bool	operator>(const iterator_vector<Iterator>& A, const iterator_vector<Iterator>& B);
     };
     template <class Iterator>
     bool	operator==(const iterator_vector<Iterator>& A, const iterator_vector<Iterator>& B) {
@@ -131,5 +155,14 @@ namespace ft {
     bool	operator>=(const iterator_vector<Iterator1>& A, const iterator_vector<Iterator2>& B) {
         return A > B || A == B;
     }
-
+//const vs noConst ?
+//    template <class Iterator>
+//    iterator_vector<Iterator>	operator+(typename iterator_vector<Iterator>::difference_type n, const iterator_vector<Iterator>& it) {
+//        return vector_iterator<Iterator>(it + n);
+//    }
+//
+//    template <class Iterator>
+//    typename iterator_vector<Iterator>::difference_type	operator-(const iterator_vector<Iterator>& first, const iterator_vector<Iterator>& second) {
+//        return first._pointer - second._pointer;
+//    }
 };
