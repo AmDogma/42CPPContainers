@@ -33,14 +33,20 @@ int main() {
 //    std::cout << *--myIt << " myIt prefix --" << std::endl;
 
 //const vs noconst
-//    ft::vector<int>::const_iterator myConstIt = myVector.begin();
-//    ft::vector<int>::const_iterator myConstIt2(myVector.begin());
-//    std::vector<int>::const_iterator realConst(it);
-//    myConstIt = myIt;
-//    myIt = myIt;
-////    *myConstIt = 123;
-//    std::cout << (myConstIt == myIt) << " - (myConstIt == myIt)" << std::endl;
-//    std::cout << (myConstIt2 != myIt) << " - (myConstIt2 != myIt)" << std::endl;
+    ft::vector<int>::const_iterator myConstIt = myVector.begin();
+    ft::vector<int>::const_iterator myConstIt2(myVector.begin());
+    std::vector<int>::const_iterator realConst(it + 2);
+    myConstIt = myIt;
+    myIt = myIt;
+//    *myConstIt = 123;
+    std::cout << (myConstIt == myIt) << " - (myConstIt == myIt)" << std::endl;
+    std::cout << (myConstIt2 != myIt) << " - (myConstIt2 != myIt)" << std::endl;
+    std::cout << ((myIt + 2) - myConstIt2) << " - ((myIt + 2) - myConstIt2)" << std::endl;
+
+// reverse
+//    ft::vector<int>::reverse_iterator myRevIt = myVector.rbegin();
+//    ft::vector<int>::const_reverse_iterator myConstRevIt(myVector.rbegin());
+//    std::cout << (myRevIt == myConstRevIt) << " - (myRevIt == myConstRevIt)" << std::endl;
 
 //insert
 //    std::cout << myVector.size() << " myVector.size()" << std::endl;

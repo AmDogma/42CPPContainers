@@ -1,7 +1,7 @@
 #pragma once
 #include <sys/types.h>
 #include <iostream>
-#include "iterator_vector.hpp"
+#include "iterator.hpp"
 
 namespace ft {
     template<class T, class Allocator = std::allocator<T> >
@@ -15,8 +15,8 @@ namespace ft {
         typedef typename allocator_type::const_pointer const_pointer;
         typedef ft::iterator_vector<T *>	    iterator;
         typedef ft::iterator_vector<const T *>	const_iterator;
-//        typedef ft::reverse_iterator<iterator>	reverse_iterator;
-//        typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+        typedef ft::reverse_iterator<iterator>	reverse_iterator;
+        typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
         typedef typename iterator_traits<iterator>::difference_type	difference_type;
         typedef size_t	size_type;
     private:
@@ -26,21 +26,23 @@ namespace ft {
         pointer         _pointer;
     public:
         /* Constructors and destructor */
-        explicit vector(const allocator_type& alloc = allocator_type()) : _alloc(alloc), _pointer(NULL), _size(0), _capacity(0) {
+        explicit vector(const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(NULL) {
         }
 
-        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0), _pointer(NULL) {
+        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(NULL)  {
             this->insert(begin(), n, val);
         }
 
         template <class InputIterator>
                  vector (InputIterator first, InputIterator last,
-                         const allocator_type& alloc = allocator_type()) : _alloc(alloc), _size(0), _capacity(0), _pointer(NULL) {
+                         const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(NULL)  {
             this->insert(begin(), first, last);
 
         }
 
         vector (const vector& x) {
+            if (*this == x)
+                return;
             clear();
             _alloc.deallocate(_pointer, _capacity);
             _capacity = x.capacity();
@@ -81,22 +83,21 @@ namespace ft {
             return iterator(_pointer + _size);
         }
 
-//        iterator rbegin() {
-//
-//            return iterator(_pointer);
-//        }
-//
-//        iterator rend() {
-//            return iterator(_pointer + _size);
-//        }
-//
-//        const_iterator rbegin() const {
-//            return iterator(_pointer);
-//        }
-//
-//        const_iterator rend() const {
-//            return iterator(_pointer + _size);
-//        }
+        reverse_iterator rbegin() {
+            return reverse_iterator(end() - 1);
+        }
+
+        reverse_iterator rend() {
+            return reverse_iterator(begin() - 1);
+        }
+
+        const_reverse_iterator rbegin() const {
+            return const_reverse_iterator(end() - 1);
+        }
+
+        const_reverse_iterator rend() const {
+            return const_reverse_iterator(begin() - 1);
+        }
 
         /* Getters */
         size_type size() const {
