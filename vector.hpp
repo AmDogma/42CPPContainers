@@ -40,11 +40,19 @@ namespace ft {
 
         }
 
+        /* Operator=  */
+        vector& operator= (const vector& x) {
+            if (this != &x) {
+                clear();
+                _alloc.deallocate(_pointer, _capacity);
+                _capacity = x.capacity();
+                _pointer = _alloc.allocate(_capacity);
+                insert(begin(), x.begin(), x.end());
+            }
+            return *this;
+        }
+
         vector (const vector& x) {
-            if (*this == x)
-                return;
-            clear();
-            _alloc.deallocate(_pointer, _capacity);
             _capacity = x.capacity();
             _pointer = _alloc.allocate(_capacity);
             insert(begin(), x.begin(), x.end());
@@ -53,17 +61,6 @@ namespace ft {
         ~vector() {
             clear();
             _alloc.deallocate(_pointer, _capacity);
-        }
-
-        /* Operator=  */
-        vector& operator= (const vector& x) {
-           if (*this == x)
-               return *this;
-           clear();
-           _alloc.deallocate(_pointer, _capacity);
-           _capacity = x.capacity();
-           _pointer = _alloc.allocate(_capacity);
-           insert(begin(), x.begin(), x.end());
         }
 
         /* Iterators */
@@ -76,27 +73,27 @@ namespace ft {
         }
 
         const_iterator begin() const {
-            return iterator(_pointer);
+            return const_iterator(_pointer);
         }
 
         const_iterator end() const {
-            return iterator(_pointer + _size);
+            return const_iterator(_pointer + _size);
         }
 
         reverse_iterator rbegin() {
-            return reverse_iterator(end() - 1);
+            return reverse_iterator(end());
         }
 
         reverse_iterator rend() {
-            return reverse_iterator(begin() - 1);
+            return reverse_iterator(begin());
         }
 
         const_reverse_iterator rbegin() const {
-            return const_reverse_iterator(end() - 1);
+            return const_reverse_iterator(end());
         }
 
         const_reverse_iterator rend() const {
-            return const_reverse_iterator(begin() - 1);
+            return const_reverse_iterator(begin());
         }
 
         /* Getters */
@@ -187,7 +184,7 @@ namespace ft {
             if (n > _size)
                 insert(end(), n - _size, val);
             else if (n < _size)
-                for (_size; _size > n; --_size)
+                for (; _size > n; --_size)
                     _alloc.destroy(_pointer + (_size - 1));
         }
 
@@ -206,11 +203,12 @@ namespace ft {
 
         iterator insert (iterator position, const value_type& val) {
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
-            if (position > end() && position < begin())
+            if (position > end() || position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + 1); // для ускорения возможно нужно сделать обе операции тут индивидуально
             for (size_type i = 0; _size - i != dis; ++i) {
                 _alloc.construct(_pointer + _size - i, _pointer[_size - i - 1]);
+//                std::cout << _pointer[_size - i - 1] << std::endl;  // debug
                 _alloc.destroy(_pointer + _size - i - 1);
             }
             _alloc.construct(_pointer + dis, val);
@@ -220,11 +218,12 @@ namespace ft {
 
         void insert (iterator position, size_type n, const value_type& val) {
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
-            if (position > end() && position < begin())
+            if (position > end() || position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + n); // для ускорения возможно нужно сделать обе операции тут индивидуально
             for (size_type i = 0; _size - i != dis; ++i) {
-                _alloc.construct(_pointer + _size - i + n, _pointer[_size - i - 1]);
+                _alloc.construct(_pointer + _size - 1 - i + n, _pointer[_size - i - 1]);
+//                std::cout << _pointer[_size - i - 1] << std::endl;  // debug
                 _alloc.destroy(_pointer + _size - i - 1);
             }
             for (size_type i = 0; i < n; i++) {
@@ -237,11 +236,11 @@ namespace ft {
         void insert (iterator position, InputIterator first, InputIterator last, char (*)[sizeof(*first)] = NULL) {
             size_type n = static_cast<size_type>(ft::distance(first, last));
             size_type dis = static_cast<size_type>(ft::distance(begin(), position));
-            if (position > end() && position < begin())
+            if (position > end() || position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + n);  // для ускорения возможно нужно сделать обе операции тут индивидуально
             for (size_type i = 0; _size - i != dis; ++i){
-                _alloc.construct(_pointer + _size - i + n, _pointer[_size - i - 1]);
+                _alloc.construct(_pointer + _size - 1 - i + n, _pointer[_size - i - 1]);
                 _alloc.destroy(_pointer + _size - i - 1);
             }
             for (size_type i = 0; i < n; i++) {

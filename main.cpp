@@ -16,7 +16,7 @@ int main() {
     realVector.push_back(56); realVector.push_back(57); realVector.push_back(58); realVector.push_back(59);
     stackVector.push(33); stackVector.push(34);stackVector.push(35);stackVector.push(36);stackVector.push(37);stackVector.push(38);
 
-    myVector.push_back(4);myVector.push_back(45);myVector.push_back(466);myVector.push_back(4777);myVector.push_back(48888);myVector.push_back(499999);
+    myVector.push_back(4);myVector.push_back(45);myVector.push_back(466);myVector.push_back(4777);myVector.push_back(48888);//myVector.push_back(499999);
     myStack.push(22); myStack.push(23); myStack.push(24); myStack.push(25); myStack.push(26);
 
     std::vector<int>::iterator it = realVector.begin();
@@ -33,20 +33,35 @@ int main() {
 //    std::cout << *--myIt << " myIt prefix --" << std::endl;
 
 //const vs noconst
-    ft::vector<int>::const_iterator myConstIt = myVector.begin();
-    ft::vector<int>::const_iterator myConstIt2(myVector.begin());
-    std::vector<int>::const_iterator realConst(it + 2);
-    myConstIt = myIt;
-    myIt = myIt;
-//    *myConstIt = 123;
-    std::cout << (myConstIt == myIt) << " - (myConstIt == myIt)" << std::endl;
-    std::cout << (myConstIt2 != myIt) << " - (myConstIt2 != myIt)" << std::endl;
-    std::cout << ((myIt + 2) - myConstIt2) << " - ((myIt + 2) - myConstIt2)" << std::endl;
+//    ft::vector<int>::const_iterator myConstIt = myVector.begin();
+//    ft::vector<int>::const_iterator myConstIt2(myVector.begin());
+//    std::vector<int>::const_iterator realConst(it + 2);
+//    myConstIt = myIt;
+//    myIt = myIt;
+////    *myConstIt = 123;
+//    std::cout << (myConstIt == myIt) << " - (myConstIt == myIt)" << std::endl;
+//    std::cout << (myConstIt2 != myIt) << " - (myConstIt2 != myIt)" << std::endl;
+//    std::cout << ((myIt + 2) - myConstIt2) << " - ((myIt + 2) - myConstIt2)" << std::endl;
 
 // reverse
-//    ft::vector<int>::reverse_iterator myRevIt = myVector.rbegin();
+    ft::vector<int>::reverse_iterator myRevIt = myVector.rbegin();
+    for (int i = 0; i < 5; ++i)
+        myRevIt[i] = (5 - i) * 5;
+
+    myRevIt = myRevIt + 5;
+//    std::cout << *(myRevIt + 5) << std::endl;
+    myRevIt = 1 + myRevIt;
+//    std::cout << *(myRevIt) << std::endl;
+    myRevIt = myRevIt - 4; // + 2
+    std::cout << *(myRevIt) << std::endl;
+    std::cout << *(myRevIt += 2) << std::endl;
+    std::cout << *(myRevIt -= 1) << std::endl;
+//
 //    ft::vector<int>::const_reverse_iterator myConstRevIt(myVector.rbegin());
-//    std::cout << (myRevIt == myConstRevIt) << " - (myRevIt == myConstRevIt)" << std::endl;
+//    std::vector<int>::reverse_iterator revIt(realVector.begin());
+//    std::cout << *revIt << " - *revIt" << std::endl;
+//    std::cout << (myRevIt < myConstRevIt) << " - (myRevIt == myConstRevIt)" << std::endl;
+
 
 //insert
 //    std::cout << myVector.size() << " myVector.size()" << std::endl;
@@ -55,7 +70,18 @@ int main() {
 //    myVector.insert(myVector.end(), 2, 123);
 //    std::cout << *(myVector.end() - 2) << " *(myVector.end() - 2)" << std::endl;
 //    std::cout << *(myVector.end() - 1) << " *(myVector.end() - 1)" << std::endl;
-//    std::cout << myVector.size() << " myVector.size() =+ 2" << std::endl;
+//    std::cout << myVector.size() << " myVector.size() =+ 2" << std::endl << std::endl;
+//
+//    myVector.clear();
+//    myVector.insert(myVector.end(),42);
+//    myVector.insert(myVector.begin(), 2, 21);
+//    myVector.insert(myVector.end() - 2,42);
+//
+//    std::cout << *(myVector.begin()) << " TEST " << std::endl;
+//    std::cout << *(myVector.end() - 2) << " TEST " << std::endl;
+//    std::cout << *(myVector.end() - 1) << " TEST *(myVector.end() - 1)" << std::endl;
+//    std::cout << myVector.size() << " myVector.size()" << std::endl << std::endl;
+
 //    myVector.insert(myVector.end(), realVector.begin(), realVector.begin() + 2);
 //    realVector.clear();
 //    std::cout << realVector.size() << " realVector.size() " << std::endl;
