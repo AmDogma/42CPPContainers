@@ -1,7 +1,9 @@
 #pragma once
 #include <sys/types.h>
 #include <iostream>
+#include <iterator>
 #include "iterator.hpp"
+#include "lexicographical_compare.hpp"
 
 namespace ft {
     template<class T, class Allocator = std::allocator<T> >
@@ -19,6 +21,7 @@ namespace ft {
         typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
         typedef typename iterator_traits<iterator>::difference_type	difference_type;
         typedef size_t	size_type;
+
     private:
         size_type       _size;
         size_type       _capacity;
@@ -26,16 +29,16 @@ namespace ft {
         pointer         _pointer;
     public:
         /* Constructors and destructor */
-        explicit vector(const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(NULL) {
+        explicit vector(const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(0) {
         }
 
-        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(NULL)  {
+        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(0)  {
             this->insert(begin(), n, val);
         }
 
         template <class InputIterator>
                  vector (InputIterator first, InputIterator last,
-                         const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(NULL)  {
+                         const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(0)  {
             this->insert(begin(), first, last);
 
         }
@@ -202,13 +205,12 @@ namespace ft {
         }
 
         iterator insert (iterator position, const value_type& val) {
-            size_type dis = static_cast<size_type>(ft::distance(begin(), position));
+            size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + 1); // для ускорения возможно нужно сделать обе операции тут индивидуально
             for (size_type i = 0; _size - i != dis; ++i) {
                 _alloc.construct(_pointer + _size - i, _pointer[_size - i - 1]);
-//                std::cout << _pointer[_size - i - 1] << std::endl;  // debug
                 _alloc.destroy(_pointer + _size - i - 1);
             }
             _alloc.construct(_pointer + dis, val);
@@ -217,13 +219,12 @@ namespace ft {
         }
 
         void insert (iterator position, size_type n, const value_type& val) {
-            size_type dis = static_cast<size_type>(ft::distance(begin(), position));
+            size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + n); // для ускорения возможно нужно сделать обе операции тут индивидуально
             for (size_type i = 0; _size - i != dis; ++i) {
                 _alloc.construct(_pointer + _size - 1 - i + n, _pointer[_size - i - 1]);
-//                std::cout << _pointer[_size - i - 1] << std::endl;  // debug
                 _alloc.destroy(_pointer + _size - i - 1);
             }
             for (size_type i = 0; i < n; i++) {
@@ -234,8 +235,8 @@ namespace ft {
 
         template <class InputIterator>
         void insert (iterator position, InputIterator first, InputIterator last, char (*)[sizeof(*first)] = NULL) {
-            size_type n = static_cast<size_type>(ft::distance(first, last));
-            size_type dis = static_cast<size_type>(ft::distance(begin(), position));
+            size_type n = static_cast<size_type>(std::distance(first, last));
+            size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
             reserve(_size + n);  // для ускорения возможно нужно сделать обе операции тут индивидуально
@@ -250,7 +251,7 @@ namespace ft {
         }
 
         iterator erase (iterator position) {
-            size_type dis = static_cast<size_type>(ft::distance(begin(), position));
+            size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (_size == 0)
                 return end();
             for (size_type i = 0; dis + i != _size; ++i) {
@@ -262,8 +263,8 @@ namespace ft {
         }
 
         iterator erase (iterator first, iterator last) {
-            size_type n = static_cast<size_type>(ft::distance(first, last));
-            size_type dis = static_cast<size_type>(ft::distance(begin(), first));
+            size_type n = static_cast<size_type>(std::distance(first, last));
+            size_type dis = static_cast<size_type>(std::distance(begin(), first)); // size_type dis = static_cast<size_type>(ft::distance(begin(), first));
             if (_size == 0)
                 return end();
             for (size_type i = 0; i != n; ++i)
@@ -294,7 +295,52 @@ namespace ft {
           other._pointer = pointer;
           other._size = size;
           other._capacity = capacity;
+//            std::swap(*this, other);
         }
      };
+
+    template< class T, class Alloc >
+    void swap( vector<T,Alloc>& lhs,
+               vector<T,Alloc>& rhs ) {
+        lhs.swap(rhs);
+    }
+
+    template< class T, class Alloc >
+    bool operator==( const vector<T,Alloc>& lhs,
+                     const vector<T,Alloc>& rhs ) {
+        return (!ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()) && !ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+    }
+
+    template< class T, class Alloc >
+    bool operator!=( const vector<T,Alloc>& lhs,
+                     const vector<T,Alloc>& rhs ) {
+        return !(lhs == rhs);
+    }
+
+    template< class T, class Alloc >
+    bool operator<( const vector<T,Alloc>& lhs,
+                    const vector<T,Alloc>& rhs ) {
+        return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    }
+
+    template< class T, class Alloc >
+    bool operator<=( const vector<T,Alloc>& lhs,
+                     const vector<T,Alloc>& rhs ) {
+        return !(lhs > rhs);
+    }
+
+    template< class T, class Alloc >
+    bool operator>( const vector<T,Alloc>& lhs,
+                    const vector<T,Alloc>& rhs ) {
+        return rhs < lhs;
+    }
+
+    template< class T, class Alloc >
+    bool operator>=( const vector<T,Alloc>& lhs,
+                     const vector<T,Alloc>& rhs ) {
+        return !(lhs < rhs);
+    }
+
+
 }
 

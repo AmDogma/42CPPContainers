@@ -13,7 +13,7 @@ int main() {
     ft::vector<int> myVector;
     ft::stack<int> myStack;
 
-    realVector.push_back(56); realVector.push_back(57); realVector.push_back(58); realVector.push_back(59);
+    realVector.push_back(22); realVector.push_back(23); realVector.push_back(24); realVector.push_back(266);
     stackVector.push(33); stackVector.push(34);stackVector.push(35);stackVector.push(36);stackVector.push(37);stackVector.push(38);
 
     myVector.push_back(4);myVector.push_back(45);myVector.push_back(466);myVector.push_back(4777);myVector.push_back(48888);//myVector.push_back(499999);
@@ -21,6 +21,10 @@ int main() {
 
     std::vector<int>::iterator it = realVector.begin();
     ft::vector<int>::iterator myIt = myVector.begin();
+
+//    max size
+    std::cout << myVector.max_size() << " myVector.max_size()" << std::endl;
+
 
 //iterator *
 //    std::cout << *myIt << " myIt" << std::endl;
@@ -43,20 +47,26 @@ int main() {
 //    std::cout << (myConstIt2 != myIt) << " - (myConstIt2 != myIt)" << std::endl;
 //    std::cout << ((myIt + 2) - myConstIt2) << " - ((myIt + 2) - myConstIt2)" << std::endl;
 
-// reverse
-    ft::vector<int>::reverse_iterator myRevIt = myVector.rbegin();
-    for (int i = 0; i < 5; ++i)
-        myRevIt[i] = (5 - i) * 5;
-
-    myRevIt = myRevIt + 5;
-//    std::cout << *(myRevIt + 5) << std::endl;
-    myRevIt = 1 + myRevIt;
-//    std::cout << *(myRevIt) << std::endl;
-    myRevIt = myRevIt - 4; // + 2
-    std::cout << *(myRevIt) << std::endl;
-    std::cout << *(myRevIt += 2) << std::endl;
-    std::cout << *(myRevIt -= 1) << std::endl;
-//
+// reverse iterator
+//    ft::vector<int>::reverse_iterator myRevIt = myVector.rbegin();
+//    for (int i = 0; i < 5; ++i)
+//        myRevIt[i] = (5 - i) * 5;
+//    realVector.push_back(26);
+//    std::vector<int>::reverse_iterator revIt = realVector.rbegin();
+//    for (int i = 0; i < 5; ++i)
+//        revIt[i] = (5 - i) * 5;
+//    std::cout << realVector.size() << " realVector.size() " << std::endl;
+//    std::cout << myVector.size() << " myVector.size()" << std::endl;
+//    revIt = revIt + 5;
+//    myRevIt = myRevIt + 5;
+//    myRevIt = 1 + myRevIt;
+//    revIt = 1 + revIt;
+//    myRevIt = myRevIt - 4;
+//    revIt = revIt - 4;
+//    std::cout << *(revIt += 2) << std::endl;
+//    std::cout << *(myRevIt += 2) << std::endl;
+//    std::cout << *(revIt -= 1) << std::endl;
+//    std::cout << *(myRevIt -= 1) << std::endl;
 //    ft::vector<int>::const_reverse_iterator myConstRevIt(myVector.rbegin());
 //    std::vector<int>::reverse_iterator revIt(realVector.begin());
 //    std::cout << *revIt << " - *revIt" << std::endl;
