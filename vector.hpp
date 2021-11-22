@@ -1,7 +1,9 @@
 #pragma once
-#include <sys/types.h>
+//#include <sys/types.h>
+#include <cstdlib>
 #include <iostream>
 #include <iterator>
+#include <algorithm>
 #include "iterator.hpp"
 #include "lexicographical_compare.hpp"
 
@@ -33,12 +35,14 @@ namespace ft {
         }
 
         explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(0)  {
+            if (n < 0)
+                throw std::logic_error("Insert position fail!"); // do we care? //throw std::out_of_range("N > SIZE");
             this->insert(begin(), n, val);
         }
 
         template <class InputIterator>
                  vector (InputIterator first, InputIterator last,
-                         const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(0)  {
+                         const allocator_type& alloc = allocator_type(), typename enable_if<!is_integral<InputIterator>::value>::type* = 0) : _size(0), _capacity(0), _alloc(alloc), _pointer(0)  {
             this->insert(begin(), first, last);
 
         }
@@ -55,15 +59,14 @@ namespace ft {
             return *this;
         }
 
-        vector (const vector& x) {
-            _capacity = x.capacity();
-            _pointer = _alloc.allocate(_capacity);
+        vector (const vector& x) : _size(0), _capacity(0), _alloc(x._alloc), _pointer(0) {
             insert(begin(), x.begin(), x.end());
         }
 
         ~vector() {
             clear();
-            _alloc.deallocate(_pointer, _capacity);
+            if (_capacity)
+                _alloc.deallocate(_pointer, _capacity);
         }
 
         /* Iterators */
@@ -166,20 +169,20 @@ namespace ft {
         }
 
         void reserve(size_type newCapacity) {
-            if (newCapacity > max_size())
-                throw std::length_error("Vector capacity out of max_size!");
+            if (newCapacity > max_size() || newCapacity < 0)
+                throw std::length_error("Vector capacity error!");
             else if (_capacity < newCapacity) {
-                size_type sizeTwice = _size * 2;
-                if (newCapacity < sizeTwice && sizeTwice < max_size())
-                    newCapacity = sizeTwice;
-                pointer temp = _pointer;
-                _pointer = _alloc.allocate(newCapacity);
-                for (size_type i = 0; i < _size; ++i) {
-                    _alloc.construct (_pointer + i, temp[i]);
-                    _alloc.destroy(temp + i);
-                }
-                _alloc.deallocate(temp, _capacity);
+                size_type capTwice = _capacity * 2 + (_capacity == 0);
+                if (newCapacity < capTwice && capTwice < max_size())
+                        newCapacity = capTwice;
+                pointer temp = _alloc.allocate(newCapacity);
+                for (size_type i = 0; i < _size; i++)
+                    _alloc.construct (temp + i, _pointer[i]);
+                for (size_type i = 0; i < _size; ++i)
+                    _alloc.destroy(_pointer + i);
+                _alloc.deallocate(_pointer, _capacity);
                 _capacity = newCapacity;
+                _pointer = temp;
             }
         }
 
@@ -207,7 +210,7 @@ namespace ft {
         iterator insert (iterator position, const value_type& val) {
             size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
-                throw std::logic_error("Insert position fail!"); // do we care?
+                throw std::logic_error("Insert position fail!"); // do we care
             reserve(_size + 1); // для ускорения возможно нужно сделать обе операции тут индивидуально
             for (size_type i = 0; _size - i != dis; ++i) {
                 _alloc.construct(_pointer + _size - i, _pointer[_size - i - 1]);
@@ -234,26 +237,40 @@ namespace ft {
         }
 
         template <class InputIterator>
-        void insert (iterator position, InputIterator first, InputIterator last, char (*)[sizeof(*first)] = NULL) {
+        void insert (iterator position, InputIterator first, InputIterator last, typename enable_if<!is_integral<InputIterator>::value>::type* = 0) {
             size_type n = static_cast<size_type>(std::distance(first, last));
             size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
                 throw std::logic_error("Insert position fail!"); // do we care?
-            reserve(_size + n);  // для ускорения возможно нужно сделать обе операции тут индивидуально
+            pointer temp = _alloc.allocate(n);
+            try {
+                for (size_type i = 0; i < n; i++)
+                    _alloc.construct(temp + i, *first++);
+            }
+            catch(...) {
+                for (size_type i = 0; temp + i != NULL && i < n; i++)
+                    _alloc.destroy(temp + i);
+                _alloc.deallocate(temp, n);
+                throw;
+            }
+            reserve(_size + n);
             for (size_type i = 0; _size - i != dis; ++i){
                 _alloc.construct(_pointer + _size - 1 - i + n, _pointer[_size - i - 1]);
                 _alloc.destroy(_pointer + _size - i - 1);
             }
             for (size_type i = 0; i < n; i++) {
-                _alloc.construct(_pointer + dis + i, *first++);
+                _alloc.construct(_pointer + dis + i, temp[i]);
+                _alloc.destroy(temp + i);
                 _size++;
             }
+            _alloc.deallocate(temp, n);
         }
 
         iterator erase (iterator position) {
             size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (_size == 0)
                 return end();
+            _alloc.destroy(_pointer + dis);
             for (size_type i = 0; dis + i != _size; ++i) {
                 _alloc.construct(_pointer + dis + i, _pointer[dis + i + 1]);
                 _alloc.destroy(_pointer + dis + i + 1);
@@ -264,16 +281,16 @@ namespace ft {
 
         iterator erase (iterator first, iterator last) {
             size_type n = static_cast<size_type>(std::distance(first, last));
-            size_type dis = static_cast<size_type>(std::distance(begin(), first)); // size_type dis = static_cast<size_type>(ft::distance(begin(), first));
+            size_type dis = static_cast<size_type>(std::distance(begin(), first));
             if (_size == 0)
                 return end();
             for (size_type i = 0; i != n; ++i)
                 _alloc.destroy(_pointer + dis + i);
+            _size -= n;
             for (size_type i = 0; dis + i != _size; ++i) {
                 _alloc.construct(_pointer + dis + i, _pointer[dis + i + n]);
                 _alloc.destroy(_pointer + dis + i + n);
             }
-            _size -= n;
             return (begin() + dis);
         }
 

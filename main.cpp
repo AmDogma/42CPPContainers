@@ -5,6 +5,10 @@
 #include <stack>
 #include <iterator>
 
+//runFunctionTest("../vector_tests/constructor.cpp", argv, env); // std::bad_alloc: std::bad_alloc
+//runFunctionTest("../vector_tests/constructor(std iterators).cpp", argv, env);
+//runFunctionTest("../vector_tests/using allocator.cpp", argv, env);
+
 int main() {
 
     std::vector<int> realVector;
@@ -23,7 +27,80 @@ int main() {
     ft::vector<int>::iterator myIt = myVector.begin();
 
 //    max size
-    std::cout << myVector.max_size() << " myVector.max_size()" << std::endl;
+    std::cout << myVector.max_size() << " myVector.max_size() 1125861859966976" << std::endl;
+
+//    constructor
+//    ft::vector<int> empty(10, 4);
+//    ft::vector<int> empty1(empty);
+//
+//    ft::vector<int> test3(10, 4), test4(10, 5);
+//    ft::vector<int> test2(test3.begin(), test3.end());
+//    test3 = test4;
+//    try { ft::vector<int> tmp5(-1, -1); }
+//    catch (std::exception &e) { myVector.push_back(1); }
+//    ft::vector<int> test1(test3);
+//    myVector.push_back(test3.size());
+//    myVector.push_back(test3.capacity());
+//    myVector.push_back(test1[2]);
+//    myVector.push_back(test4[2]);
+//    myVector.push_back(test4[2]);
+//
+//    std::cout << myVector.size() << " myVector.size()" << std::endl;
+//    std::cout << test1.size() << " myVector.size()" << std::endl;
+//    std::cout << test2.size() << " myVector.size()" << std::endl;
+//    std::cout << test3.size() << " myVector.size()" << std::endl;
+//    std::cout << test4.size() << " myVector.size()" << std::endl;
+
+//insert try catch
+//    ft::vector<int> tester(99, 1);
+//    tester.resize(50);
+//    class B {
+//    public:
+//        char *l;
+//        int i;
+//        B():l(nullptr), i(1) {};
+//        B(const int &ex) {
+//            this->i = ex;
+//            this->l = new char('a');
+//        };
+//        virtual ~B() {
+//            delete this->l;
+//            this->l = nullptr;
+//        };
+//    };
+//
+//    class A : public B {
+//    public:
+//        A():B(){};
+//        A(const B* ex){
+//            this->l = new char(*(ex->l));
+//            this->i = ex->i;
+//            if (ex->i == -1) throw "n";
+//        }
+//        ~A() {
+//            delete this->l;
+//            this->l = nullptr;
+//        };
+//    };
+//    std::unique_ptr<B> k2(new B(3));
+//    std::unique_ptr<B> k3(new B(4));
+//    std::unique_ptr<B> k4(new B(-1));
+//    ft::vector<A> vv;
+//    ft::vector<B*> v1;
+//
+//    v1.push_back(&(*k2));
+//    v1.push_back(&(*k3));
+//    v1.push_back(&(*k4));
+//    std::cout << &(*k2) << &(*k3) << &(*k4) << " = my k2 k3 k4" << std::endl;
+//    try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
+//    catch (...) {
+//        std::cout << vv.size() << vv.capacity() << " = my size capacity" << std::endl;
+//    }
+
+//    erase big data
+//    for (int i = 0; i < 990000000; ++i)
+//        myVector.push_back(i);
+//    myVector.push_back(*(myVector.erase(myVector.begin() + 8000, myVector.end() - 15000)));
 
 
 //iterator *
@@ -109,11 +186,11 @@ int main() {
 
 
 //erase
-//    std::cout << myVector.size() << " myVector.size()" << std::endl;
-//    std::cout << *myVector.erase(myVector.begin() + 2, myVector.begin() + 3) << " myVector.erase" << std::endl;
-//    std::cout << myVector.size() << " myVector.size()" << std::endl;
-//    std::cout << *myVector.erase(myVector.end() - 2) << " myVector.erase" << std::endl;
-//    std::cout << myVector.size() << " myVector.size()" << std::endl;
+    std::cout << myVector.size() << " myVector.size()" << std::endl;
+    std::cout << *myVector.erase(myVector.begin() + 2, myVector.begin() + 3) << " myVector.erase" << std::endl;
+    std::cout << myVector.size() << " myVector.size()" << std::endl;
+    std::cout << *myVector.erase(myVector.end() - 2) << " myVector.erase" << std::endl;
+    std::cout << myVector.size() << " myVector.size()" << std::endl;
 
 //swap
 //    std::cout << myVector.size() << " myVector.size()" << std::endl;
