@@ -1,11 +1,7 @@
 #pragma once
-//#include <sys/types.h>
 #include <cstdlib>
-#include <iostream>
-#include <iterator>
 #include <algorithm>
 #include "iterator.hpp"
-#include "lexicographical_compare.hpp"
 
 namespace ft {
     template<class T, class Allocator = std::allocator<T> >
@@ -22,7 +18,7 @@ namespace ft {
         typedef ft::reverse_iterator<iterator>	reverse_iterator;
         typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
         typedef typename iterator_traits<iterator>::difference_type	difference_type;
-        typedef size_t	size_type;
+        typedef std::size_t	size_type;
 
     private:
         size_type       _size;
@@ -312,7 +308,6 @@ namespace ft {
           other._pointer = pointer;
           other._size = size;
           other._capacity = capacity;
-//            std::swap(*this, other);
         }
      };
 
@@ -357,7 +352,6 @@ namespace ft {
                      const vector<T,Alloc>& rhs ) {
         return !(lhs < rhs);
     }
-
 
 }
 

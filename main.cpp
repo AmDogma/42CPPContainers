@@ -186,11 +186,11 @@ int main() {
 
 
 //erase
-    std::cout << myVector.size() << " myVector.size()" << std::endl;
-    std::cout << *myVector.erase(myVector.begin() + 2, myVector.begin() + 3) << " myVector.erase" << std::endl;
-    std::cout << myVector.size() << " myVector.size()" << std::endl;
-    std::cout << *myVector.erase(myVector.end() - 2) << " myVector.erase" << std::endl;
-    std::cout << myVector.size() << " myVector.size()" << std::endl;
+//    std::cout << myVector.size() << " myVector.size()" << std::endl;
+//    std::cout << *myVector.erase(myVector.begin() + 2, myVector.begin() + 3) << " myVector.erase" << std::endl;
+//    std::cout << myVector.size() << " myVector.size()" << std::endl;
+//    std::cout << *myVector.erase(myVector.end() - 2) << " myVector.erase" << std::endl;
+//    std::cout << myVector.size() << " myVector.size()" << std::endl;
 
 //swap
 //    std::cout << myVector.size() << " myVector.size()" << std::endl;
