@@ -267,6 +267,7 @@ namespace ft {
             if (_size == 0)
                 return end();
             _alloc.destroy(_pointer + dis);
+//            std::uninitialized_copy(position + 1, end(), position);
             for (size_type i = 0; dis + i != _size; ++i) {
                 _alloc.construct(_pointer + dis + i, _pointer[dis + i + 1]);
                 _alloc.destroy(_pointer + dis + i + 1);

@@ -1,33 +1,38 @@
 #include <iostream>
 #include "vector.hpp"
 #include "stack.hpp"
+#include "map.hpp"
+#include <map>
 #include <vector>
 #include <stack>
 #include <iterator>
 
-//runFunctionTest("../vector_tests/constructor.cpp", argv, env); // std::bad_alloc: std::bad_alloc
-//runFunctionTest("../vector_tests/constructor(std iterators).cpp", argv, env);
-//runFunctionTest("../vector_tests/using allocator.cpp", argv, env);
-
 int main() {
 
-    std::vector<int> realVector;
-    std::stack<int, std::vector<int> > stackVector;
+    std::map<int, std::string> realMap;
+    ft::map<int, std::string> myMap;
 
-    ft::vector<int> myVector;
-    ft::stack<int> myStack;
 
-    realVector.push_back(22); realVector.push_back(23); realVector.push_back(24); realVector.push_back(266);
-    stackVector.push(33); stackVector.push(34);stackVector.push(35);stackVector.push(36);stackVector.push(37);stackVector.push(38);
 
-    myVector.push_back(4);myVector.push_back(45);myVector.push_back(466);myVector.push_back(4777);myVector.push_back(48888);//myVector.push_back(499999);
-    myStack.push(22); myStack.push(23); myStack.push(24); myStack.push(25); myStack.push(26);
 
-    std::vector<int>::iterator it = realVector.begin();
-    ft::vector<int>::iterator myIt = myVector.begin();
+//    VECTOR!!!!!
+//    std::vector<int> realVector;
+//    std::stack<int, std::vector<int> > stackVector;
+//
+//    ft::vector<int> myVector;
+//    ft::stack<int> myStack;
+//
+//    realVector.push_back(22); realVector.push_back(23); realVector.push_back(24); realVector.push_back(266);
+//    stackVector.push(33); stackVector.push(34);stackVector.push(35);stackVector.push(36);stackVector.push(37);stackVector.push(38);
+//
+//    myVector.push_back(4);myVector.push_back(45);myVector.push_back(466);myVector.push_back(4777);myVector.push_back(48888);//myVector.push_back(499999);
+//    myStack.push(22); myStack.push(23); myStack.push(24); myStack.push(25); myStack.push(26);
+//
+//    std::vector<int>::iterator it = realVector.begin();
+//    ft::vector<int>::iterator myIt = myVector.begin();
 
 //    max size
-    std::cout << myVector.max_size() << " myVector.max_size() 1125861859966976" << std::endl;
+//    std::cout << myVector.max_size() << " myVector.max_size()" << std::endl;
 
 //    constructor
 //    ft::vector<int> empty(10, 4);
