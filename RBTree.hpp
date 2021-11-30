@@ -1,5 +1,4 @@
 #pragma once
-#define RED 0
 #include "iterator_traits.hpp"
 
 namespace ft {
@@ -87,7 +86,7 @@ namespace ft {
             some->left->isBlack = color;
         }
 
-        node_ptr	min_node(node_ptr some) {
+        node_ptr	min_node(node_ptr some) const {
             if (some) {
                 while (some->left)
                     some = some->left;
@@ -95,7 +94,7 @@ namespace ft {
             return some;
         }
 
-        node_ptr	max_node(node_ptr some) {
+        node_ptr	max_node(node_ptr some) const {
             if (some) {
                 while (some->right)
                     some = some->right;
@@ -193,7 +192,7 @@ namespace ft {
 //            return NULL;
 //        }
 //
-        node_ptr	find_big(node_ptr n, node_ptr root) {
+        node_ptr	find_big(node_ptr n, node_ptr root) const {
 
             if (!n)
                 return NULL;
@@ -201,29 +200,33 @@ namespace ft {
                 return min_node(n->right);
             else if (n == max_node(root))
                 return NULL;
-            else if (n->parent) {
+            else if (n->parent) { // to delete
                 while (n->parent->right == n)
                     n = n->parent;
                 return n->parent;
             }
             std::cout << "ERROR FIND_BIG" << std::endl;// to delete
-            return NULL; // to delete
+            while (n->parent->right == n)
+                n = n->parent;
+            return n->parent;
         }
 
-        node_ptr	find_low(node_ptr n, node_ptr root) {
+        node_ptr	find_low(node_ptr n, node_ptr root) const {
             if (!n)
                 return max_node(root);
             else if (n->left)
                 return max_node(n->left);
             else if (n == min_node(root)) // do wee need to care this?
                 return NULL;
-            else if (n->parent) {
+            else if (n->parent) { // to delete
                 while (n->parent->left == n)
                     n = n->parent;
                 return n->parent;
             }
             std::cout << "ERROR FIND_LOW" << std::endl;// to delete
-            return NULL; // to delete
+            while (n->parent->left == n)
+                n = n->parent;
+            return n->parent;
         }
 
 //        void	clear(node_ptr* n, node_ptr end = NULL, bool root = true) {

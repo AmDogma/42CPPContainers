@@ -20,19 +20,31 @@ int main() {
     ft::node<int, std::string> some(ded);
 
     ft::map<int, std::string> myMap;
-    myMap.inserter(fff);
-    myMap.inserter(ft::make_pair(31, "3hello"));
-    myMap.inserter(ft::make_pair(41, "4hola"));
-    myMap.inserter(ft::make_pair(51, "5howdy"));
-    myMap.inserter(ft::make_pair(21, "2Hau"));
+//insert
+    myMap.insert(myMap.begin(),fff);
+    myMap.insert(ft::make_pair(31, "3hello"));
+    myMap.insert(ft::make_pair(41, "4hola"));
+    myMap.insert(ft::make_pair(51, "5howdy"));
+    myMap.insert(ft::make_pair(21, "2Hau"));
+//    ft::map<int, std::string> myMap2(myMap.begin(), myMap.end());
+//    ft::map<int, std::string>::iterator myIt2(myMap2.begin());
+//    for (; myIt2 != myMap2.end(); ++myIt2)
+//        std::cout << (*(myIt2)).second << std::endl;
 
+//clear
+//    myMap.clear();
 
-    ft::map<int, std::string>::iterator myIt(myMap.begin());
-    ft::map<int, std::string>::reverse_iterator myR(myMap.rbegin());
-//    for (; myIt != myMap.end(); myIt++)
+//size
+//    std::cout << myMap.max_size() << std::endl;
+//    std::cout << myMap.size() << std::endl;
+
+// iterators + reverse
+//    ft::map<int, std::string>::iterator myIt(myMap.begin());
+//    ft::map<int, std::string>::reverse_iterator myR(myMap.rbegin());
+//    for (; myIt != myMap.end(); ++myIt)
 //        std::cout << (*(myIt)).second << std::endl;
-    for (; myR != myMap.rend(); myR++)
-        std::cout << (*(myR)).second << std::endl;
+//    for (; myR != myMap.rend(); ++myR)
+//        std::cout << (*(myR)).second << std::endl;
 
 
 

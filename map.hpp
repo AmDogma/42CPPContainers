@@ -1,5 +1,6 @@
 #pragma once
 #include "RBTree.hpp"
+#include "iterator.hpp"
 
 namespace ft {
 
@@ -14,11 +15,11 @@ namespace ft {
         typedef Compare key_compare;
         typedef ft::pair<const Key, T> value_type; // ft::pair<const typename check_const<key_type>::typecheck_const<key_type>::type, mapped_type>
         typedef std::less<ft::pair<const Key, T> >	value_compare; //  pair_compare ?
-        typedef Alloc allocator_type;
-        typedef value_type& reference;
-        typedef const value_type& const_reference;
-        typedef typename allocator_type::pointer pointer;
-        typedef typename allocator_type::const_pointer const_pointer;
+//        typedef Alloc allocator_type;
+//        typedef value_type& reference;
+//        typedef const value_type& const_reference;
+//        typedef typename allocator_type::pointer pointer;
+//        typedef typename allocator_type::const_pointer const_pointer;
         typedef std::size_t size_type;
 
 //        typedef typename allocator_type::reference reference;
@@ -33,35 +34,30 @@ namespace ft {
     private:
         typedef ft::pair<const Key, T> pair;
         typedef RBTree<const Key, T> tree_type;
+        typedef typename tree_type::allocator_type allocator_type; // ? test allocator?
         typedef node<const key_type, mapped_type> node;
         typedef typename tree_type::node_ptr node_ptr;
         tree_type	_tree;
         node_ptr	_root;
-        node_ptr	_end; // maybe don't need
         allocator_type	_alloc;
         key_compare	_k_comp;
         value_compare	_v_comp;
         size_type	_size;
     public:
 
-        explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _k_comp(comp), _alloc(alloc), _root(NULL), _end(NULL), _size(0) {
-            _end = _tree.create_node(ft::make_pair(key_type(), mapped_type()));
-        }
+        explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _root(NULL), _alloc(alloc), _k_comp(comp), _size(0) {}
 
         template <class InputIterator>
         map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
-             const allocator_type& alloc = allocator_type()) : _k_comp(comp), _alloc(alloc), _root(NULL), _end(NULL), _size(0)  {
-            _end = _tree.create_node(ft::make_pair(key_type(), mapped_type()));
+             const allocator_type& alloc = allocator_type()) : _root(NULL), _alloc(alloc), _k_comp(comp), _size(0) {
             insert(first, last);
         }
 
         ~map() {
             _tree.clear(&_root);
-            _tree.delete_node(_end);
         };
 
         map (const map& other) : _root(NULL) {
-            _end = _tree.create_node(ft::make_pair(key_type(), mapped_type()));
             *this = other;
         }
 
@@ -72,10 +68,6 @@ namespace ft {
             _v_comp = other._v_comp;
             insert(other.begin(), other.end());
             return *this;
-        }
-
-        void inserter(const value_type &some) { // myft to delete
-            _tree.insert(&_root, _tree.create_node(some));
         }
 
         iterator begin() {
@@ -114,23 +106,163 @@ namespace ft {
             return _size == 0;
         }
 
+        size_type size() const {
+            return _size;
+        }
+
+        size_type max_size() const {
+            return (_tree.max_size());
+        }
+
+        mapped_type& operator[] (const key_type& k) {
+            insert(ft::make_pair(k, mapped_type()));
+            return _tree.find_node(&_root, k);
+        }
+
+        ft::pair<iterator, bool> insert (const value_type& val) {
+            bool res = _tree.insert(&_root, _tree.create_node(val));
+            _size += res;
+            node_ptr forIter = _tree.find_node(&_root, val.first);
+            return ft::pair<iterator, bool>(iterator(_root, forIter), res);
+        }
+
+        iterator insert (iterator position, const value_type& val) {
+            if (position == begin())
+                _size += _tree.insert(&_root, _tree.create_node(val));
+            else
+                _size += _tree.insert(&_root, _tree.create_node(val));
+            node_ptr forIter = _tree.find_node(&_root, val.first);
+            return iterator(_root, forIter);
+        }
+
+        template <class InputIterator>
+        void insert (InputIterator first, InputIterator last) { // нужна защита от перегрузки типами?
+            for (; first != last; ++first)
+                insert(*first);
+        }
+
+        void erase (iterator position) {
+            _size -= _tree.erase(&_root, position->first);
+        }
+
+        size_type erase (const key_type& k) {
+            bool res = _tree.erase(&_root, k);
+            _size -= res;
+            return res;
+        }
+
+        void erase (iterator first, iterator last) {
+            for (; first != last; ++first)
+                erase(*first);
+        }
+
+        void swap (map& x) {
+            std::swap(_root, x._root);
+            std::swap(_alloc, x._alloc);
+            std::swap(_k_comp, x._k_komp);
+            std::swap(_v_comp, x._v_comp);
+            std::swap(_size, x._size);
+        }
+
         void clear() {
             _tree.clear(&_root);
             _size = 0;
         }
 
-//        pair<iterator,bool> insert (const value_type& val) {
-//
-//        }
+        key_compare key_comp() const {
+            return _k_comp;
+        }
 
-//        iterator insert (iterator position, const value_type& val) {
-//
-//        }
+        value_compare value_comp() const {
+            return _v_comp;
+        }
 
-//        template <class InputIterator>
-//        void insert (InputIterator first, InputIterator last) {
-//
-//        }
+        iterator find (const key_type& k) {
+            node_ptr forIter = _tree.find_node(&_root, k);
+            return iterator(_root, forIter);
+        }
+
+        const_iterator find (const key_type& k) const {
+            node_ptr forIter = _tree.find_node(&_root, k);
+            return const_iterator(_root, forIter);
+        }
+
+        size_type count (const key_type& k) const {
+            return _tree.find_node(_root, k);
+        }
+
+        iterator lower_bound (const key_type& k) {
+            node_ptr tmp = _tree.min_node(_root);
+            while (tmp && k > tmp->pair.first)
+                tmp = _tree.find_big(tmp, _root);
+            return iterator(_root, tmp);
+        }
+
+        const_iterator lower_bound (const key_type& k) const {
+            node_ptr tmp = _tree.min_node(_root);
+            while (tmp && k > tmp->pair.first)
+                tmp = _tree.find_big(tmp, _root);
+            return const_iterator(_root, tmp);
+        }
+
+        iterator upper_bound (const key_type& k) {
+            node_ptr tmp = _tree.min_node(_root);
+            while (tmp && k > tmp->pair.first)
+                tmp = _tree.find_big(tmp, _root);
+            if (k == tmp->pair.first)
+                tmp = _tree.find_big(tmp, _root);
+            return iterator(_root, tmp);
+        }
+
+        const_iterator upper_bound (const key_type& k) const {
+            node_ptr tmp = _tree.min_node(_root);
+            while (tmp && k > tmp->pair.first)
+                tmp = _tree.find_big(tmp, _root);
+            if (k == tmp->pair.first)
+                tmp = _tree.find_big(tmp, _root);
+            return const_iterator(_root, tmp);
+        }
+
+        ft::pair<iterator,iterator>             equal_range (const key_type& k){
+           return ft::make_pair(lower_bound(k), upper_bound(k));
+        }
+
+        ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const {
+            return ft::make_pair(lower_bound(k), upper_bound(k));
+        }
+
+        allocator_type get_allocator() const {
+            return _alloc;
+        }
 
     };
+
+    template <class Key, class T, class Compare, class Allocator>
+    bool operator==(const map<Key,T,Compare,Allocator>& x, const map<Key,T,Compare,Allocator>& y) {
+
+    }
+
+    template <class Key, class T, class Compare, class Allocator>
+    bool operator< (const map<Key,T,Compare,Allocator>& x, const map<Key,T,Compare,Allocator>& y) {
+
+    }
+    
+    template <class Key, class T, class Compare, class Allocator>
+    bool operator!=(const map<Key,T,Compare,Allocator>& x,
+                    const map<Key,T,Compare,Allocator>& y);
+    template <class Key, class T, class Compare, class Allocator>
+    bool operator> (const map<Key,T,Compare,Allocator>& x,
+                    const map<Key,T,Compare,Allocator>& y);
+    template <class Key, class T, class Compare, class Allocator>
+    bool operator>=(const map<Key,T,Compare,Allocator>& x,
+                    const map<Key,T,Compare,Allocator>& y);
+    template <class Key, class T, class Compare, class Allocator>
+    bool operator<=(const map<Key,T,Compare,Allocator>& x,
+                    const map<Key,T,Compare,Allocator>& y);
+// specialized algorithms:
+    template <class Key, class T, class Compare, class Allocator>
+    void swap(map<Key,T,Compare,Allocator>& x,
+              map<Key,T,Compare,Allocator>& y);
+}
+
 }

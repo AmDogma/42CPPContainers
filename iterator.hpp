@@ -11,7 +11,7 @@ namespace ft {
 //    }
 
     template <class P>
-    class	map_iterator {
+    class   map_iterator {
     public:
         typedef typename ft::iterator_traits<P*>::value_type 		value_type;
         typedef typename ft::iterator_traits<P*>::reference 		reference;
@@ -53,7 +53,7 @@ namespace ft {
             return *this;
         }
 
-        map_iterator	operator++(int n) {//            static_cast<void>(n);
+        map_iterator	operator++(int) {
             map_iterator<P>	tmp(*this);
             _base = _tree.find_big(_base, _root);
             return tmp;
@@ -64,7 +64,7 @@ namespace ft {
             return *this;
         }
 
-        map_iterator	operator--(int n) {//            static_cast<void>(n);
+        map_iterator	operator--(int) {
             map_iterator<P>	tmp(*this);
             _base = _tree.find_low(_base, _root);
             return tmp;
@@ -116,7 +116,6 @@ namespace ft {
 
         ~reverse_iterator() {}
 
-        // возможно понадобятся операторы присвоения для конст
         template <class Type>
         operator reverse_iterator<Type>() const {
             return reverse_iterator<Type>(_point);
@@ -132,7 +131,7 @@ namespace ft {
             return _point;
         }
 
-        reference operator* () const { // не проходит тест
+        reference operator* () const {
             IteratorType tmp = _point;
             --tmp;
             return *tmp;
@@ -190,7 +189,7 @@ namespace ft {
 
     template <class Iterator1, class Iterator2>
     bool	operator==(const reverse_iterator<Iterator1>& A, const reverse_iterator<Iterator2>& B) {
-        return A.base() == B.base(); // *(A.base()) == *(B.base());
+        return A.base() == B.base();
     }
 
     template <class Iterator1, class Iterator2>
@@ -201,7 +200,7 @@ namespace ft {
 
     template <class Iterator1, class Iterator2>
     bool	operator<(const reverse_iterator<Iterator1>& A, const reverse_iterator<Iterator2>& B) {
-        return A.base() > B.base(); // ???? A.base() >
+        return A.base() > B.base();
     }
 
     template <class Iterator1, class Iterator2>
@@ -211,7 +210,7 @@ namespace ft {
 
     template <class Iterator1, class Iterator2>
     bool	operator>(const reverse_iterator<Iterator1>& A, const reverse_iterator<Iterator2>& B) {
-        return A.base() < B.base(); // ?? A.base()
+        return A.base() < B.base();
     }
 
     template <class Iterator1, class Iterator2>

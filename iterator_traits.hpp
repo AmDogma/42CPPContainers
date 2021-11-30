@@ -55,7 +55,7 @@ namespace ft {
         typedef Val second_type;
         first_type first;
         second_type second;
-        pair() : first(), second() {} // second_type()
+        pair() : first(), second() {}
 
         template<class K, class V>
         pair (const pair<K, V> &pr) : first(static_cast<Key>(pr.first)), second(static_cast<Val>(pr.second)) {} // ?? pair(const pair & pr) : first(pr.first), second(pr.second) {}
@@ -68,13 +68,41 @@ namespace ft {
             return (*this);
         }
     };
-    // COMPARE PAIR AND MAKE TO DO
+
+    template <class T1, class T2>
+    bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+        return lhs.first == rhs.first && lhs.second == rhs.second;
+    }
+
+    template <class T1, class T2>
+    bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+        return !(lhs == rhs);
+    }
+
+    template <class T1, class T2>
+    bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+        return lhs.first < rhs.first || (!(rhs.first<lhs.first) && lhs.second < rhs.second);
+    }
+
+    template <class T1, class T2>
+    bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+        return !(rhs < lhs);
+    }
+
+    template <class T1, class T2>
+    bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+        return rhs < lhs;
+    }
+
+    template <class T1, class T2>
+    bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+        return !(lhs < rhs);
+    }
 
     template <class T1, class T2>
     pair<T1,T2>	make_pair(T1 x, T2 y) {
         return ft::pair<T1, T2>(x, y);
     }
-
 
     template <class K, class V>
     struct node {
@@ -84,7 +112,6 @@ namespace ft {
         node*	parent;
         node*	left;
         node*	right;
-//        node*	root;
         bool	isBlack;
         node() : parent(NULL), left(NULL), right(NULL), isBlack(false) {}
         node(const ft::pair<first_type, second_type>& p_pair) : pair(p_pair), parent(NULL), left(NULL), right(NULL), isBlack(false) {}
@@ -93,7 +120,6 @@ namespace ft {
             parent = node.parent;
             left = node.left;
             right = node.right;
-//            this->end = node.end;
             isBlack = node.isBlack;
             return *this;
         }
