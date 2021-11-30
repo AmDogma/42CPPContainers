@@ -49,6 +49,56 @@ namespace ft {
             typedef random_access_iterator_tag	iterator_category; // ?
         };
 
+    template<class Key, class Val>
+    struct pair {
+        typedef Key first_type;
+        typedef Val second_type;
+        first_type first;
+        second_type second;
+        pair() : first(), second() {} // second_type()
+
+        template<class K, class V>
+        pair (const pair<K, V> &pr) : first(static_cast<Key>(pr.first)), second(static_cast<Val>(pr.second)) {} // ?? pair(const pair & pr) : first(pr.first), second(pr.second) {}
+
+        pair(const first_type &a, const second_type &b) : first(a), second(b) {}
+
+        pair &operator=(const pair &pr) {
+            first = pr.first;
+            second = pr.second;
+            return (*this);
+        }
+    };
+    // COMPARE PAIR AND MAKE TO DO
+
+    template <class T1, class T2>
+    pair<T1,T2>	make_pair(T1 x, T2 y) {
+        return ft::pair<T1, T2>(x, y);
+    }
+
+
+    template <class K, class V>
+    struct node {
+        typedef K  first_type;
+        typedef V  second_type;
+        ft::pair<first_type, second_type>	pair;
+        node*	parent;
+        node*	left;
+        node*	right;
+//        node*	root;
+        bool	isBlack;
+        node() : parent(NULL), left(NULL), right(NULL), isBlack(false) {}
+        node(const ft::pair<first_type, second_type>& p_pair) : pair(p_pair), parent(NULL), left(NULL), right(NULL), isBlack(false) {}
+        node&	operator=(const node& node) {
+            pair = node.pair;
+            parent = node.parent;
+            left = node.left;
+            right = node.right;
+//            this->end = node.end;
+            isBlack = node.isBlack;
+            return *this;
+        }
+    };
+
     template< class InputIt1, class InputIt2 >
     bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
                                   InputIt2 first2, InputIt2 last2 ) {

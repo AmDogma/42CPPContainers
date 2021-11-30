@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "iterator_traits.hpp"
+#include "RBTree.hpp"
 
 namespace ft {
 
@@ -8,6 +9,91 @@ namespace ft {
 //    typename iterator_traits<Iterator>::iterator_category	iterator_category(Iterator iter) {
 //        return typename iterator_traits<Iterator>::iterator_category();
 //    }
+
+    template <class P>
+    class	map_iterator {
+    public:
+        typedef typename ft::iterator_traits<P*>::value_type 		value_type;
+        typedef typename ft::iterator_traits<P*>::reference 		reference;
+        typedef typename ft::iterator_traits<P*>::pointer			pointer;
+        typedef typename ft::iterator_traits<P*>::difference_type	difference_type;
+        typedef typename P::first_type first_type;
+        typedef typename P::second_type second_type;
+        typedef ft::node<first_type, second_type>* node_ptr;
+        typedef ft::RBTree<first_type, second_type> tree;
+        typedef std::bidirectional_iterator_tag iterator_category;
+    private:
+        tree _tree;
+        node_ptr _root;
+        node_ptr _base;
+    public:
+        map_iterator() : _tree(tree()), _root(NULL), _base(NULL) {}
+
+        explicit map_iterator(const node_ptr root, const node_ptr node) : _tree(tree()), _root(root), _base(node) {} // static_cast<pointer>(node)
+
+        map_iterator(const map_iterator& other) : _root(other._root), _base(other._base) {}
+
+        ~map_iterator() {}
+
+        template <class Type>
+        operator map_iterator<Type>() const {
+            return map_iterator<Type>(_base);
+        }
+
+        reference	operator*() const {
+            return _base->pair;
+        }
+
+        pointer	operator->() const {
+            return &(_base->pair);
+        }
+
+        map_iterator&	operator++() {
+            _base = _tree.find_big(_base, _root);
+            return *this;
+        }
+
+        map_iterator	operator++(int n) {//            static_cast<void>(n);
+            map_iterator<P>	tmp(*this);
+            _base = _tree.find_big(_base, _root);
+            return tmp;
+        }
+
+        map_iterator&	operator--() {
+            _base = _tree.find_low(_base, _root);
+            return *this;
+        }
+
+        map_iterator	operator--(int n) {//            static_cast<void>(n);
+            map_iterator<P>	tmp(*this);
+            _base = _tree.find_low(_base, _root);
+            return tmp;
+        }
+
+        template <class Iterator1, class Iterator2>
+        friend  bool	operator==(const map_iterator<Iterator1>& A, const map_iterator<Iterator2>& B);
+
+    };
+
+//    template <class Iterator>
+//    bool	operator==(const map_iterator<Iterator>& A, const map_iterator<Iterator>& B) {
+//        return A._base == B._base;
+//    }
+
+    template <class Iterator1, class Iterator2>
+    bool	operator==(const map_iterator<Iterator1>& A, const map_iterator<Iterator2>& B) {
+        return A._base == B._base;
+    }
+
+//    template <class Iterator>
+//    bool	operator!=(const map_iterator<Iterator>& A, const map_iterator<Iterator>& B) {
+//        return !(A == B);
+//    }
+
+    template <class Iterator1, class Iterator2>
+    bool	operator!=(const map_iterator<Iterator1>& A, const map_iterator<Iterator2>& B) {
+        return !(A == B);
+    }
 
     template <class IteratorType>
     class reverse_iterator {
@@ -48,7 +134,7 @@ namespace ft {
 
         reference operator* () const { // не проходит тест
             IteratorType tmp = _point;
-            tmp--;
+            --tmp;
             return *tmp;
         }
 

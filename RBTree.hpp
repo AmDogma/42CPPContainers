@@ -1,57 +1,20 @@
 #pragma once
 #define RED 0
+#include "iterator_traits.hpp"
 
 namespace ft {
-    template<class Key, class Val>
-    struct pair {
-        typedef Key first_type;
-        typedef Val second_type;
-        first_type first;
-        second_type second;
-        pair() : first(), second() {} // second_type()
-        template<class K, class V>
-        pair (const pair<K, V> &pr) : first(pr.first), second(pr.second) {} // ?? pair(const pair & pr) : first(pr.first), second(pr.second) {}
-        pair(const first_type &a, const second_type &b) : first(a), second(b) {}
-        pair &operator=(const pair &pr) {
-            first = pr.first;
-            second = pr.second;
-            return (*this);
-        }
-    };
-    // COMPARE PAIR AND MAKE TO DO
 
-
-    template <class Key, class Val, class Alloc = std::allocator<ft::pair<Key, Val> > >
-    struct node {
-        ft::pair<Key, Val>	pair;
-        node*	parent;
-        node*	left;
-        node*	right;
-//        node*	end;
-        bool	isBlack;
-        node() : parent(NULL), left(NULL), right(NULL), isBlack(false) {}
-        node(ft::pair<Key, Val>& p_pair) : pair(p_pair), parent(NULL), left(NULL), right(NULL), isBlack(false) {}
-        node&	operator=(const node& node) {
-            pair = node.pair;
-            parent = node.parent;
-            left = node.left;
-            right = node.right;
-//            this->end = node.end;
-            isBlack = node.isBlack;
-            return *this;
-        }
-    };
-
-    template <class Key, class Val, class Alloc = std::allocator<node<Key, Val> > >
+    template <class Key, class Val, class Alloc = std::allocator<ft::node<const Key, Val> > >
     class RBTree {
     public:
         typedef Key first_type;
         typedef Val second_type;
         typedef Alloc allocator_type;
-        typedef node<first_type, second_type> node;
-        typedef typename allocator_type::pointer node_ptr;
-        typedef ft::pair<first_type, second_type> pair;
-
+//        typedef typename allocator_type::value_type node;
+        typedef ft::pair<const first_type, second_type> pair;
+        typedef node<const first_type, second_type> node;
+//        typedef typename allocator_type::reference node_ptr;
+        typedef node* node_ptr;
     private:
         allocator_type	_alloc;
     public:
@@ -230,44 +193,38 @@ namespace ft {
 //            return NULL;
 //        }
 //
-//        node_ptr	min_to_max(node_ptr n) const  { // end??
-//            if (n) {
-//                if (!n->end && !n->parent)
-//                    n = n;
-//                else if (!n->end)
-//                    n = min_node(n->parent);
-//                else if (n == max_node(n))
-//                    n = n->end;
-//                else if (n->right) {
-//                    n = min_node(n->right, false);
-//                }
-//                else if (n->parent) {
-//                    while (n->parent->right == n)
-//                        n = n->parent;
-//                    n = n->parent;
-//                }
-//            }
-//            return n;
-//        }
-//
-//        node_ptr	max_to_min(node_ptr n) const  { // end?
-//            if (n) {
-//                if (!n->end && !n->parent)
-//                    n = n;
-//                else if (!n->end)
-//                    n = max_node(n->parent);
-//                else if (n == min_node(n))
-//                    n = n->end;
-//                else if (n->left)
-//                    n = max_node(n->left, false);
-//                else if (n->parent) {
-//                    while (n->parent->left == n)
-//                        n = n->parent;
-//                    n = n->parent;
-//                }
-//            }
-//            return n;
-//        }
+        node_ptr	find_big(node_ptr n, node_ptr root) {
+
+            if (!n)
+                return NULL;
+            else if (n->right)
+                return min_node(n->right);
+            else if (n == max_node(root))
+                return NULL;
+            else if (n->parent) {
+                while (n->parent->right == n)
+                    n = n->parent;
+                return n->parent;
+            }
+            std::cout << "ERROR FIND_BIG" << std::endl;// to delete
+            return NULL; // to delete
+        }
+
+        node_ptr	find_low(node_ptr n, node_ptr root) {
+            if (!n)
+                return max_node(root);
+            else if (n->left)
+                return max_node(n->left);
+            else if (n == min_node(root)) // do wee need to care this?
+                return NULL;
+            else if (n->parent) {
+                while (n->parent->left == n)
+                    n = n->parent;
+                return n->parent;
+            }
+            std::cout << "ERROR FIND_LOW" << std::endl;// to delete
+            return NULL; // to delete
+        }
 
 //        void	clear(node_ptr* n, node_ptr end = NULL, bool root = true) {
 //            node_ptr	tmp = *n;
@@ -283,11 +240,14 @@ namespace ft {
 //            *n = NULL;
 //        }
         void	clear(node_ptr* root) {
-            if ((*root)->left)
-                clear(&((*root)->left));
-            if ((*root)->right)
-                clear(&((*root)->right));
-            delete_node((*root));
+            if (*root)
+            {
+                if ((*root)->left)
+                    clear(&((*root)->left));
+                if ((*root)->right)
+                    clear(&((*root)->right));
+                delete_node((*root));
+            }
             *root = NULL;
         }
 
