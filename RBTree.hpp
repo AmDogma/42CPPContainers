@@ -1,5 +1,6 @@
 #pragma once
 #include "iterator_traits.hpp"
+#include "pair_n_node.hpp"
 
 namespace ft {
 
@@ -344,6 +345,50 @@ namespace ft {
             return true;
         }
 
+//        void change_parent(node_ptr* root, node_ptr first, node_ptr second) {
+//            node_ptr tempParent = first->parent;
+//            if (first->parent) {
+//                if (first == first->parent->left)
+//                    first->parent->left = second;
+//                else
+//                    first->parent->right = second;
+//            }
+//            else
+//                *root = second;
+//            first->parent = second->parent;
+//            if (second->parent) {
+//                if (second == second->parent->left)
+//                    second->parent->left = first;
+//                else
+//                    second->parent->right = first;
+//            }
+//            else
+//                *root = first;
+//            second->parent = tempParent;
+//        }
+//
+
+        void swap_p(node_ptr* root, node_ptr remove, node_ptr replace) {
+            if (remove->parent) {
+                if (remove->parent->left == remove)
+                    remove->parent->left = replace;
+                else
+                    remove->parent->right = replace;
+            }
+            replace->parent = remove->parent;
+            if (remove->left) {
+                remove->left->parent = replace;
+            }
+            replace->left = remove->left;
+            if (remove->right) {
+                remove->right->parent = replace;
+            }
+            replace->right = remove->right;
+            replace->isBlack = remove->isBlack;
+            if(*root == remove)
+                *root = replace;
+        }
+
         bool	erase(node_ptr* root, first_type key) {
             node_ptr	remove = find_node(root, key);
             if (remove) {
@@ -353,19 +398,12 @@ namespace ft {
                 else if (remove->right)
                     replace = erase_right(remove, root);
                 else
-                    replace = erase_not_child(remove, root);
-                if (replace) {
-                    remove->pair.first = replace->pair.first;
-                    remove->pair.second = replace->pair.second;
-                }
-                else
-                    replace = remove;
-                if (replace == remove && remove == *root) {
+                    erase_not_child(remove, root);
+                if (replace)
+                    swap_p(root, remove, replace);
+                if (replace == remove && remove == *root)
                     *root = NULL;
-//                    if (replace->end)
-//                        replace->end->parent = NULL;
-                }
-                delete_node(replace);
+                delete_node(remove); //remove
                 return true;
             }
             return false;

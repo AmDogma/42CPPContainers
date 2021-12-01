@@ -31,13 +31,13 @@ namespace ft {
 
         explicit map_iterator(const node_ptr root, const node_ptr node) : _tree(tree()), _root(root), _base(node) {} // static_cast<pointer>(node)
 
-        map_iterator(const map_iterator& other) : _root(other._root), _base(other._base) {}
+        map_iterator(const map_iterator& other) : _tree(other._tree), _root(other._root), _base(other._base) {}
 
         ~map_iterator() {}
 
         template <class Type>
         operator map_iterator<Type>() const {
-            return map_iterator<Type>(_base);
+            return map_iterator<Type>(_root, _base);
         }
 
         reference	operator*() const {

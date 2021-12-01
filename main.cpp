@@ -11,25 +11,70 @@ int main() {
 
     // MAP
 
-//    std::map<int, std::string> realMap;
+    std::map<int, std::string> realMap;
+    ft::map<int, std::string> myMap;
+//    std::map<int, std::string>::iterator rIt(realMap.begin());
+//    *rIt =
+
 //    std::pair<int, std::string> rr = std::make_pair(1, "2222");
 //    std::map<int, std::string>::iterator rIt;
 
-    ft::pair<int, std::string> ded = ft::make_pair(11, "1HEY");
-    ft::pair<int, std::string> fff(ded);
-    ft::node<int, std::string> some(ded);
+//    ft::pair<int, std::string> ded = ft::make_pair(11, "1HEY");
 
-    ft::map<int, std::string> myMap;
+//    ft::pair<int, std::string> fff(ded);
+//    ft::node<int, std::string> some(ded);
+//
+
+
+// max size different
+//    std::cout << realMap.max_size() << std::endl;
+//    std::cout << myMap.max_size() << std::endl;
+
 //insert
-    myMap.insert(myMap.begin(),fff);
-    myMap.insert(ft::make_pair(31, "3hello"));
-    myMap.insert(ft::make_pair(41, "4hola"));
-    myMap.insert(ft::make_pair(51, "5howdy"));
-    myMap.insert(ft::make_pair(21, "2Hau"));
-//    ft::map<int, std::string> myMap2(myMap.begin(), myMap.end());
-//    ft::map<int, std::string>::iterator myIt2(myMap2.begin());
+//    myMap.insert(myMap.begin(),fff);
+//    for (int i = 0; i < 9999; ++i)
+//        myMap.insert(ft::make_pair(i, "1"));
+
+//    const ft::map<int, std::string> myMap2(myMap.begin(), myMap.end());
+//    ft::map<int, std::string>::const_iterator myIt2(myMap2.begin());
 //    for (; myIt2 != myMap2.end(); ++myIt2)
 //        std::cout << (*(myIt2)).second << std::endl;
+
+//erase
+//    myMap.erase(9998);
+//    ft::map<int, std::string>::iterator myIt(myMap.begin());
+//    int i = 0;
+//    for (; myIt != myMap.end(); ++i, ++myIt) {
+////        std::cout << (*(myIt)).second << "\t";
+//    }
+//    std::cout << std::endl << "result if " << i << std::endl;
+
+
+//value and key compare
+//    std::cout <<  myMap.key_comp()(31, 31) << std::endl;
+//    std::cout <<  myMap.value_comp()(*myMap.begin(), *myIt2) << std::endl;
+
+//upper bound
+//    ft::map<int, int> mp;
+//    mp.insert(ft::make_pair(10, 10));
+//    if (mp.upper_bound(11) == mp.end())
+//        std::cout << "no" << std::endl;
+//
+//    mp.insert(ft::make_pair(20, 20));
+//    mp.insert(ft::make_pair(30, 30));
+//    mp.insert(ft::make_pair(40, 40));
+//    mp.insert(ft::make_pair(50, 50));
+//    mp.insert(ft::make_pair(60, 60));
+//    mp.insert(ft::make_pair(-10, 10));
+//    mp.insert(ft::make_pair(-20, 20));
+//    ft::map<int, int>::iterator IT(mp.begin());
+
+//    for (int i = 1; i < 60; i += 10) {
+//        IT = mp.upper_bound(i);
+//        std::cout << (*(IT)).second << std::endl;}
+//    for (; IT != mp.end(); ++IT)
+//        std::cout << (*(IT)).first << "  " << (*(IT)).second << std::endl;
+
 
 //clear
 //    myMap.clear();
