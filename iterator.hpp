@@ -36,42 +36,45 @@ namespace ft {
         ~map_iterator() {}
 
         template <class Type>
-        operator map_iterator<Type>() const {
-            return map_iterator<Type>(_root, _base);
+        operator map_iterator<const Type>() const {
+            return map_iterator<const Type>(_root, _base);
         }
 
-        reference	operator*() const {
+        P&	operator*() const {
             return _base->pair;
         }
 
-        pointer	operator->() const {
+        P*	operator->() const {
             return &(_base->pair);
         }
 
         map_iterator&	operator++() {
-            _base = _tree.find_big(_base, _root);
+            _base = _tree.find_big(_base, &_root->parent);
             return *this;
         }
 
         map_iterator	operator++(int) {
             map_iterator<P>	tmp(*this);
-            _base = _tree.find_big(_base, _root);
+            _base = _tree.find_big(_base, &_root->parent);
             return tmp;
         }
 
         map_iterator&	operator--() {
-            _base = _tree.find_low(_base, _root);
+            _base = _tree.find_low(_base, &_root->parent);
             return *this;
         }
 
         map_iterator	operator--(int) {
             map_iterator<P>	tmp(*this);
-            _base = _tree.find_low(_base, _root);
+            _base = _tree.find_low(_base, &_root->parent);
             return tmp;
         }
 
         template <class Iterator1, class Iterator2>
         friend  bool	operator==(const map_iterator<Iterator1>& A, const map_iterator<Iterator2>& B);
+
+//        template <class Iterator>
+//        friend bool	operator==(const map_iterator<Iterator>& A, const map_iterator<Iterator>& B);
 
     };
 

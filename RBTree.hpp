@@ -4,7 +4,7 @@
 
 namespace ft {
 
-    template <class Key, class Val, class Alloc = std::allocator<ft::node<const Key, Val> > >
+    template <class Key, class Val, class Compare = std::less<Key>, class Alloc = std::allocator<ft::node<const Key, Val> > >
     class RBTree {
     public:
         typedef Key first_type;
@@ -12,11 +12,12 @@ namespace ft {
         typedef Alloc allocator_type;
 //        typedef typename allocator_type::value_type node;
         typedef ft::pair<const first_type, second_type> pair;
-        typedef node<const first_type, second_type> node;
-//        typedef typename allocator_type::reference node_ptr;
+        typedef ft::node<const first_type, second_type> node;
+//        typedef typename allocator_type::pointer node_ptr;
         typedef node* node_ptr;
     private:
         allocator_type	_alloc;
+        Compare _compare;
     public:
         node_ptr create_node(pair new_pair) {
             node_ptr new_node = _alloc.allocate(1);
@@ -88,6 +89,9 @@ namespace ft {
         }
 
         node_ptr	min_node(node_ptr some) const {
+//            node_ptr some = NULL;
+//            if (root)
+//                node_ptr some = *root;
             if (some) {
                 while (some->left)
                     some = some->left;
@@ -96,6 +100,9 @@ namespace ft {
         }
 
         node_ptr	max_node(node_ptr some) const {
+//            node_ptr some = NULL;
+//            if (root)
+//                node_ptr some = *root;
             if (some) {
                 while (some->right)
                     some = some->right;
@@ -127,12 +134,12 @@ namespace ft {
 //            return some;
 //        }
 
-        node_ptr	find_node(node_ptr* root, first_type key) const  {
-            node_ptr	tmp = *root;
+        node_ptr	find_node(node_ptr root, first_type key) const  {
+            node_ptr	tmp = root;
             while (tmp) {
-                if (tmp->pair.first == key)
+                if (!_compare(tmp->pair.first, key) && !_compare(key, tmp->pair.first))
                     return tmp;
-                else if (key > tmp->pair.first) {
+                else if (_compare(tmp->pair.first, key)) {
                     if (tmp->right)
                         tmp = tmp->right;
                     else
@@ -193,13 +200,12 @@ namespace ft {
 //            return NULL;
 //        }
 //
-        node_ptr	find_big(node_ptr n, node_ptr root) const {
-
+        node_ptr	find_big(node_ptr n, node_ptr* root) const {
             if (!n)
                 return NULL;
             else if (n->right)
                 return min_node(n->right);
-            else if (n == max_node(root))
+            else if (n == max_node(*root))
                 return NULL;
             else if (n->parent) { // to delete
                 while (n->parent->right == n)
@@ -212,12 +218,12 @@ namespace ft {
             return n->parent;
         }
 
-        node_ptr	find_low(node_ptr n, node_ptr root) const {
+        node_ptr	find_low(node_ptr n, node_ptr* root) const {
             if (!n)
-                return max_node(root);
+                return max_node(*root);
             else if (n->left)
                 return max_node(n->left);
-            else if (n == min_node(root)) // do wee need to care this?
+            else if (n == min_node(*root)) // do wee need to care this?
                 return NULL;
             else if (n->parent) { // to delete
                 while (n->parent->left == n)
@@ -310,18 +316,17 @@ namespace ft {
         bool	insert(node_ptr* root, node_ptr new_node) {
             if (*root == NULL) {
                 *root = new_node;
-//                new_node->end->parent = *root;
                 new_node->isBlack = true;
             }
             else {
                 node_ptr	tmp = *root;
                 while (tmp) {
-                    if (tmp->pair.first == new_node->pair.first) {
+                    if (!_compare(tmp->pair.first, new_node->pair.first) && !_compare(new_node->pair.first, tmp->pair.first)) {
                         if (tmp != new_node)
                             delete_node(new_node);
                         return false;
                     }
-                    else if (new_node->pair.first > tmp->pair.first) {
+                    else if (_compare(tmp->pair.first, new_node->pair.first)) {
                         if (tmp->right)
                             tmp = tmp->right;
                         else {
@@ -390,7 +395,7 @@ namespace ft {
         }
 
         bool	erase(node_ptr* root, first_type key) {
-            node_ptr	remove = find_node(root, key);
+            node_ptr	remove = find_node(*root, key);
             if (remove) {
                 node_ptr    replace = NULL;
                 if (remove->left)
@@ -401,7 +406,7 @@ namespace ft {
                     erase_not_child(remove, root);
                 if (replace)
                     swap_p(root, remove, replace);
-                if (replace == remove && remove == *root)
+                if (remove == *root)
                     *root = NULL;
                 delete_node(remove); //remove
                 return true;

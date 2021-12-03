@@ -9,10 +9,18 @@
 
 int main() {
 
-    // MAP
+//     MAP
 
-    std::map<int, std::string> realMap;
-    ft::map<int, std::string> myMap;
+//
+//    std::map<int, std::string> realMap;
+//    ft::map<int, std::string> myMap;
+
+#define T1 int
+#define T2 int
+    ft::map<T1, T2> const mp;
+    ft::map<T1, T2>::iterator it = mp.begin(); // <-- error expected
+
+
 //    std::map<int, std::string>::iterator rIt(realMap.begin());
 //    *rIt =
 
@@ -32,33 +40,61 @@ int main() {
 
 //insert
 //    myMap.insert(myMap.begin(),fff);
-//    for (int i = 0; i < 9999; ++i)
+//    typedef ft::map<int, std::string>::value_type T3;
+//
+//    for (int i = 1; i < 8; i +=  1)
 //        myMap.insert(ft::make_pair(i, "1"));
-
+//
 //    const ft::map<int, std::string> myMap2(myMap.begin(), myMap.end());
 //    ft::map<int, std::string>::const_iterator myIt2(myMap2.begin());
+//    ft::pair <ft::map<int, std::string>::iterator, bool> test = myMap.insert(ft::make_pair(222, "222"));
+//    std::cout << test.second << "result is " << test.first->first << "  " << test.first->second << std::endl;
+
 //    for (; myIt2 != myMap2.end(); ++myIt2)
-//        std::cout << (*(myIt2)).second << std::endl;
+//        std::cout << myIt2->first << myIt2->second << std::endl;
+
+
 
 //erase
 //    myMap.erase(9998);
+//
+//    for (int i = 1; i < 5; i +=  1)
+//        myMap.insert(ft::make_pair(i, "1"));
+//
+//    myMap.erase(myMap.begin(), ++(++(++myMap.begin())));
+//
 //    ft::map<int, std::string>::iterator myIt(myMap.begin());
-//    int i = 0;
-//    for (; myIt != myMap.end(); ++i, ++myIt) {
-////        std::cout << (*(myIt)).second << "\t";
+//    for (; myIt != myMap.end(); ++myIt) {
+//        std::cout << (*(myIt)).first << "\t";
 //    }
-//    std::cout << std::endl << "result if " << i << std::endl;
+//    ft::map<int, std::string> copymap(myMap);
+//    std::cout << std::endl << "result is " << myMap.size() << std::endl;
 
 
 //value and key compare
 //    std::cout <<  myMap.key_comp()(31, 31) << std::endl;
 //    std::cout <<  myMap.value_comp()(*myMap.begin(), *myIt2) << std::endl;
 
-//upper bound
+//upper bound equal_range
 //    ft::map<int, int> mp;
+//    std::map<int, int> m;
+//
 //    mp.insert(ft::make_pair(10, 10));
 //    if (mp.upper_bound(11) == mp.end())
 //        std::cout << "no" << std::endl;
+
+//    m.insert(std::make_pair(10, 10));
+//    if (m.upper_bound(11) == m.end())
+//        std::cout << "no" << std::endl;
+
+//    m.insert(std::make_pair(20, 20));
+//    m.insert(std::make_pair(30, 30));
+//    m.insert(std::make_pair(40, 40));
+//    m.insert(std::make_pair(50, 50));
+//    m.insert(std::make_pair(60, 60));
+//    m.insert(std::make_pair(-10, 10));
+//    m.insert(std::make_pair(-20, 20));
+//    std::map<int, int>::iterator iter(m.begin());
 //
 //    mp.insert(ft::make_pair(20, 20));
 //    mp.insert(ft::make_pair(30, 30));
@@ -68,12 +104,27 @@ int main() {
 //    mp.insert(ft::make_pair(-10, 10));
 //    mp.insert(ft::make_pair(-20, 20));
 //    ft::map<int, int>::iterator IT(mp.begin());
+//
+//    ft::pair<ft::map<int, int>::iterator, ft::map<int, int>::iterator> res = mp.equal_range(20);
+//    std::pair<std::map<int, int>::iterator, std::map<int, int>::iterator> res1 = m.equal_range(20);
+//    if (res.first != mp.end()) {
+//        std::cout << res.first->first << std::endl;
+//        std::cout << res.second->first << std::endl;
+//    }
+//
+//    if (res1.first != m.end()) {
+//        std::cout << res1.first->first << std::endl;
+//        std::cout << res1.second->first << std::endl;
+//    }
+
 
 //    for (int i = 1; i < 60; i += 10) {
 //        IT = mp.upper_bound(i);
 //        std::cout << (*(IT)).second << std::endl;}
 //    for (; IT != mp.end(); ++IT)
 //        std::cout << (*(IT)).first << "  " << (*(IT)).second << std::endl;
+//    for (; iter != m.end(); ++iter)
+//        std::cout << (*(iter)).first << "  " << (*(iter)).second << std::endl;
 
 
 //clear
