@@ -35,7 +35,7 @@ namespace ft {
         typedef T value_type;
         typedef T *pointer;
         typedef T &reference;
-        typedef random_access_iterator_tag iterator_category; // ?
+//        typedef random_access_iterator_tag iterator_category; // ?
     };
 
     template<class T>
@@ -44,6 +44,6 @@ namespace ft {
         typedef T value_type;
         typedef const T *pointer;
         typedef const T &reference;
-        typedef random_access_iterator_tag iterator_category; // ?
+//        typedef random_access_iterator_tag iterator_category; // ?
     };
 }

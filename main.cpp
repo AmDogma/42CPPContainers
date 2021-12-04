@@ -7,18 +7,15 @@
 #include <stack>
 #include <iterator>
 
+
+
 int main() {
 
 //     MAP
 
 //
-//    std::map<int, std::string> realMap;
-//    ft::map<int, std::string> myMap;
-
-#define T1 int
-#define T2 int
-    ft::map<T1, T2> const mp;
-    ft::map<T1, T2>::iterator it = mp.begin(); // <-- error expected
+    std::map<int, std::string> realMap;
+    ft::map<int, std::string> myMap;
 
 
 //    std::map<int, std::string>::iterator rIt(realMap.begin());
@@ -39,36 +36,68 @@ int main() {
 //    std::cout << myMap.max_size() << std::endl;
 
 //insert
-//    myMap.insert(myMap.begin(),fff);
-//    typedef ft::map<int, std::string>::value_type T3;
-//
 //    for (int i = 1; i < 8; i +=  1)
 //        myMap.insert(ft::make_pair(i, "1"));
-//
 //    const ft::map<int, std::string> myMap2(myMap.begin(), myMap.end());
 //    ft::map<int, std::string>::const_iterator myIt2(myMap2.begin());
 //    ft::pair <ft::map<int, std::string>::iterator, bool> test = myMap.insert(ft::make_pair(222, "222"));
 //    std::cout << test.second << "result is " << test.first->first << "  " << test.first->second << std::endl;
-
+//
 //    for (; myIt2 != myMap2.end(); ++myIt2)
 //        std::cout << myIt2->first << myIt2->second << std::endl;
+
+//    typedef ft::map<int, int>::iterator iterator;
+//
+//    ft::map<int, int, std::plus<int> > mp3;
+//    for (int i = 1; i < 3; i +=  1)
+//        mp3.insert(ft::make_pair(i, i));
+//    for (iterator it = mp3.begin(); it != mp3.end(); ++it) {
+//        std::cout << it->first << std::endl;
+//    }
+//    std::map<int, int, std::plus<int> > mp;
+//    for (int i = 1; i < 3; i +=  1)
+//        mp.insert(std::make_pair(i, i));
+//    for (std::map<int, int>::iterator it1 = mp.begin(); it1 != mp.end(); ++it1) {
+//        std::cout << it1->first << std::endl;
+//    }
 
 
 
 //erase
+
+
+//    for (int i = 500000; i > 0; i -=  1)
+//        realMap.insert(std::make_pair(i, "1"));
+
+
+
+
+//    realMap.erase(realMap.begin(), ((--realMap.end())));
+
+//    std::map<int, std::string>::iterator It(realMap.begin());
+//    for (; It != realMap.end(); ++It) {
+//        std::cout << (*(It)).first << "\t";
+//    }
+//    ft::map<int, std::string> copymap(myMap);
+//    std::cout << std::endl << "result is " << realMap.size() << std::endl;
+
+//
+//
 //    myMap.erase(9998);
 //
-//    for (int i = 1; i < 5; i +=  1)
-//        myMap.insert(ft::make_pair(i, "1"));
-//
-//    myMap.erase(myMap.begin(), ++(++(++myMap.begin())));
-//
+    for (int i = 30; i < 100000; i +=  1)
+        myMap.insert(ft::make_pair(i, "1"));
+
+    std::cout << std::endl << "result is " << myMap.size() << std::endl;
+
+    myMap.erase(myMap.begin(), ((--myMap.end())));
+
 //    ft::map<int, std::string>::iterator myIt(myMap.begin());
 //    for (; myIt != myMap.end(); ++myIt) {
 //        std::cout << (*(myIt)).first << "\t";
 //    }
 //    ft::map<int, std::string> copymap(myMap);
-//    std::cout << std::endl << "result is " << myMap.size() << std::endl;
+    std::cout << std::endl << "result is " << myMap.size() << std::endl;
 
 
 //value and key compare

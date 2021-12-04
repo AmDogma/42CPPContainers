@@ -48,6 +48,10 @@ namespace ft {
             return &(_base->pair);
         }
 
+        node_ptr& node() {
+            return _base;
+        }
+
         map_iterator&	operator++() {
             _base = _tree.find_big(_base, &_root->parent);
             return *this;

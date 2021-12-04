@@ -11,10 +11,10 @@ namespace ft {
         typedef Val second_type;
         typedef Alloc allocator_type;
 //        typedef typename allocator_type::value_type node;
-        typedef ft::pair<const first_type, second_type> pair;
-        typedef ft::node<const first_type, second_type> node;
-//        typedef typename allocator_type::pointer node_ptr;
-        typedef node* node_ptr;
+        typedef ft::pair<first_type, second_type> pair;
+        typedef ft::node<first_type, second_type> node;
+        typedef typename allocator_type::pointer node_ptr;
+//        typedef node* node_ptr;
     private:
         allocator_type	_alloc;
         Compare _compare;
@@ -32,55 +32,6 @@ namespace ft {
             }
         }
 
-        void	rotate_left(node_ptr some, node_ptr* root) {
-            node_ptr	right = some->right;
-            right->parent = some->parent;
-            if (right->parent) {
-                if (right->parent->right == some)
-                    right->parent->right = right;
-                else
-                    right->parent->left = right;
-            }
-            some->parent = right;
-            some->right = right->left;
-            if (some->right) {
-                if (some->right->parent == right)
-                    some->right->parent = some;
-                else
-                    some->right->parent = some;
-            }
-            right->left = some;
-            bool	color = some->isBlack;
-            some->isBlack = right->isBlack;
-            right->isBlack = color;
-            if (!right->parent)
-                *root = right;
-        }
-
-        void	rotate_right(node_ptr some, node_ptr* root) {
-            node_ptr	left = some->left;
-            left->parent = some->parent;
-            if (left->parent) {
-                if (left->parent->left == some)
-                    left->parent->left = left;
-                else
-                    left->parent->right = left;
-            }
-            some->parent = left;
-            some->left = left->right;
-            if (some->left) {
-                if (some->left->parent == left)
-                    some->left->parent = some;
-                else
-                    some->left->parent = some;
-            }
-            left->right = some;
-            some->isBlack = false;
-            left->isBlack = true;
-            if (!left->parent)
-                *root = left;
-        }
-
         void	swap_color(node_ptr some) {
             bool	color = some->isBlack;
             some->isBlack = some->right->isBlack;
@@ -89,9 +40,6 @@ namespace ft {
         }
 
         node_ptr	min_node(node_ptr some) const {
-//            node_ptr some = NULL;
-//            if (root)
-//                node_ptr some = *root;
             if (some) {
                 while (some->left)
                     some = some->left;
@@ -100,106 +48,24 @@ namespace ft {
         }
 
         node_ptr	max_node(node_ptr some) const {
-//            node_ptr some = NULL;
-//            if (root)
-//                node_ptr some = *root;
             if (some) {
                 while (some->right)
                     some = some->right;
             }
             return some;
         }
-//        node_ptr	min_node(node_ptr some, bool root = true) const {
-//            if (some) {
-//                if (root) {
-//                    while (some->parent)
-//                        some = some->parent;
-//                }
-//                while (some->left)
-//                    some = some->left;
-//            }
-//            return some;
-//        }
-//
-//        node_ptr	max_node(node_ptr some, bool root = true) const {
-//            if (some) {
-//                if (root) {
-//                    while (some->parent)
-//                        some = some->parent;
-//                }
-//                while (some->right) {
-//                    some = some->right;
-//                }
-//            }
-//            return some;
-//        }
 
-        node_ptr	find_node(node_ptr root, first_type key) const  {
-            node_ptr	tmp = root;
-            while (tmp) {
-                if (!_compare(tmp->pair.first, key) && !_compare(key, tmp->pair.first))
-                    return tmp;
-                else if (_compare(tmp->pair.first, key)) {
-                    if (tmp->right)
-                        tmp = tmp->right;
-                    else
-                        break;
-                }
-                else {
-                    if (tmp->left)
-                        tmp = tmp->left;
-                    else
-                        break;
+        node_ptr	find_node(node_ptr tmp, first_type& key) const  {
+            if (tmp) {
+                if (_compare(tmp->pair.first, key))
+                    return find_node(tmp->right, key);
+                else if (_compare(key, tmp->pair.first)){
+                    return find_node(tmp->left, key);
                 }
             }
-            return NULL;
+            return tmp;
         }
-//
-//        node_ptr	find_lower_node(node_ptr* root, first_type key) const  {
-//            node_ptr	tmp = *root;
-//            while (tmp) {
-//                if (tmp->pair.first == key)
-//                    return tmp;
-//                else if (key > tmp->pair.first) {
-//                    if (tmp->right)
-//                        tmp = tmp->right;
-//                    else
-//                        return NULL;
-//                }
-//                else {
-//                    if (tmp->left)
-//                        tmp = tmp->left;
-//                    else
-//                        return tmp;
-//                }
-//            }
-//            return NULL;
-//        }
-//
-//        node_ptr	find_upper_node(node_ptr* root, first_type key) const  {
-//            node_ptr	tmp = *root;
-//            while (tmp) {
-//                if (tmp->pair.first == key) {
-//                    if (tmp->right)
-//                        return tmp->right;
-//                    return NULL;
-//                }
-//                else if (key > tmp->pair.first) {
-//                    if (tmp->right)
-//                        tmp = tmp->right;
-//                    else
-//                        return NULL;
-//                }
-//                else {
-//                    if (tmp->left)
-//                        tmp = tmp->left;
-//                    else
-//                        return tmp;
-//                }
-//            }
-//            return NULL;
-//        }
-//
+
         node_ptr	find_big(node_ptr n, node_ptr* root) const {
             if (!n)
                 return NULL;
@@ -207,12 +73,6 @@ namespace ft {
                 return min_node(n->right);
             else if (n == max_node(*root))
                 return NULL;
-            else if (n->parent) { // to delete
-                while (n->parent->right == n)
-                    n = n->parent;
-                return n->parent;
-            }
-            std::cout << "ERROR FIND_BIG" << std::endl;// to delete
             while (n->parent->right == n)
                 n = n->parent;
             return n->parent;
@@ -223,32 +83,11 @@ namespace ft {
                 return max_node(*root);
             else if (n->left)
                 return max_node(n->left);
-            else if (n == min_node(*root)) // do wee need to care this?
-                return NULL;
-            else if (n->parent) { // to delete
-                while (n->parent->left == n)
-                    n = n->parent;
-                return n->parent;
-            }
-            std::cout << "ERROR FIND_LOW" << std::endl;// to delete
             while (n->parent->left == n)
                 n = n->parent;
             return n->parent;
         }
 
-//        void	clear(node_ptr* n, node_ptr end = NULL, bool root = true) {
-//            node_ptr	tmp = *n;
-//            if (tmp && tmp->end) {
-//                if (root) {
-//                    while (tmp->parent)
-//                        tmp = tmp->parent;
-//                }
-//                while (tmp)
-//                    erase(&tmp, tmp->pair.first);
-//            }
-//            delete_node(end);
-//            *n = NULL;
-//        }
         void	clear(node_ptr* root) {
             if (*root)
             {
@@ -350,30 +189,7 @@ namespace ft {
             return true;
         }
 
-//        void change_parent(node_ptr* root, node_ptr first, node_ptr second) {
-//            node_ptr tempParent = first->parent;
-//            if (first->parent) {
-//                if (first == first->parent->left)
-//                    first->parent->left = second;
-//                else
-//                    first->parent->right = second;
-//            }
-//            else
-//                *root = second;
-//            first->parent = second->parent;
-//            if (second->parent) {
-//                if (second == second->parent->left)
-//                    second->parent->left = first;
-//                else
-//                    second->parent->right = first;
-//            }
-//            else
-//                *root = first;
-//            second->parent = tempParent;
-//        }
-//
-
-        void swap_p(node_ptr* root, node_ptr remove, node_ptr replace) {
+        void swap_p(node_ptr remove, node_ptr replace) {
             if (remove->parent) {
                 if (remove->parent->left == remove)
                     remove->parent->left = replace;
@@ -390,8 +206,8 @@ namespace ft {
             }
             replace->right = remove->right;
             replace->isBlack = remove->isBlack;
-            if(*root == remove)
-                *root = replace;
+//            if(*root == remove)
+//                *root = replace;
         }
 
         bool	erase(node_ptr* root, first_type key) {
@@ -405,13 +221,39 @@ namespace ft {
                 else
                     erase_not_child(remove, root);
                 if (replace)
-                    swap_p(root, remove, replace);
-                if (remove == *root)
-                    *root = NULL;
-                delete_node(remove); //remove
+                    swap_p(remove, replace);
+                if (remove == *root) {
+                    if (replace)
+                        *root = replace;
+                    else
+                        *root = NULL;
+                }
+                delete_node(remove);
                 return true;
             }
             return false;
+        }
+
+        void	erase(node_ptr* root, node_ptr remove) {
+//            node_ptr	remove = find_node(*root, key);
+            if (remove) {
+                node_ptr    replace = NULL;
+                if (remove->left)
+                    replace = erase_left(remove, root);
+                else if (remove->right)
+                    replace = erase_right(remove, root);
+                else
+                    erase_not_child(remove, root);
+                if (replace)
+                    swap_p(remove, replace);
+                if (remove == *root) {
+                    if (replace)
+                        *root = replace;
+                    else
+                        *root = NULL;
+                }
+                delete_node(remove);
+            }
         }
 
         node_ptr	erase_left(node_ptr some, node_ptr* root) {
@@ -477,45 +319,193 @@ namespace ft {
         void	erase_balance(node_ptr* root, node_ptr some) {
             node_ptr	right;
             node_ptr	left;
-            node_ptr	child;
+            node_ptr	brother;
             while (some) {
-                child = some->right;
-                if (child) {
-                    right = child->right;
-                    left = child->left;
+                brother = some->right; //same
+                if (brother) {
+                    right = brother->right;
+                    left = brother->left;
                     if ((right || left) && (!right || right->isBlack == true) && (!left || left->isBlack == true)) {
-                        if (child->isBlack == true) {
-                            child->isBlack = false;
+                        if (brother->isBlack == true) {
+                            brother->isBlack = false;
                             some->isBlack = true;
-                        }
-                        if (child->isBlack == false)
                             rotate_left(some, root);
+                        }
                         else
                             some = some->parent;
                     }
-                    else if (right && child->isBlack == true) {
+                    else if (right && brother->isBlack == true) {
                         if (left && left->isBlack == false && right->isBlack == true) {
-                            rotate_right(child, root);
-                            right = child;
-                            child = left;
+                            rotate_right(brother, root);
+                            right = brother;
+                            brother = left;
                         }
                         if (right->isBlack == false && (!left || left->isBlack == true || !some->left))
                             rotate_left(some, root);
                         else
                             some = some->parent;
                     }
-                    else if (child->isBlack == true && some->isBlack == false) {
+                    else if (brother->isBlack == true && some->isBlack == false) {
                         some->isBlack = true;
-                        child->isBlack = false;
+                        brother->isBlack = false;
                         some = some->parent;
                     }
                     else
                         some = some->parent;
                 }
                 else
-                    some = some->parent;
-                if (*root)
-                    (*root)->isBlack = true;
+                    break;
+//                    some = some->parent;
+            }
+        }
+
+        void	rotate_left(node_ptr some, node_ptr* root) {
+            node_ptr	right = some->right;
+            right->parent = some->parent;
+            if (right->parent) {
+                if (right->parent->right == some)
+                    right->parent->right = right;
+                else
+                    right->parent->left = right;
+            }
+            some->parent = right;
+            some->right = right->left;
+            if (some->right) {
+                if (some->right->parent == right)
+                    some->right->parent = some;
+                else
+                    some->right->parent = some;
+            }
+            right->left = some;
+            bool	color = some->isBlack;
+            some->isBlack = right->isBlack;
+            right->isBlack = color;
+            if (!right->parent)
+                *root = right;
+        }
+
+        void	rotate_right(node_ptr some, node_ptr* root) {
+            node_ptr	left = some->left;
+            left->parent = some->parent;
+            if (left->parent) {
+                if (left->parent->left == some)
+                    left->parent->left = left;
+                else
+                    left->parent->right = left;
+            }
+            some->parent = left;
+            some->left = left->right;
+            if (some->left) {
+                if (some->left->parent == left)
+                    some->left->parent = some;
+                else
+                    some->left->parent = some;
+            }
+            left->right = some;
+            some->isBlack = false;
+            left->isBlack = true;
+            if (!left->parent)
+                *root = left;
+        }
+
+//        void 	rotate_right(node_ptr	node, node_ptr* _root){
+//            node_ptr y;
+//
+//            y = node->left;
+//            node->left = y->right;
+//            if (y->right)
+//                y->right->parent = node;
+//            y->parent = node->parent;
+//            if (node->parent == NULL)
+//                *_root = y;
+//            else if (node == node->parent->left)
+//                node->parent->left = y;
+//            else
+//                node->parent->right = y;
+//            y->right = node;
+//            node->parent = y;
+//        }
+//        void 	rotate_left(node_ptr node, node_ptr* _root){
+//            node_ptr y;
+//
+//            y = node->right;
+//            node->right = y->left;
+//            if (y->left)
+//                y->left->parent = node;
+//            y->parent = node->parent;
+//            if (node->parent == NULL)
+//                *_root = y;
+//            else if (node == node->parent->left)
+//                node->parent->left = y;
+//            else
+//                node->parent->right = y;
+//            y->left = node;
+//            node->parent = y;
+//        }
+
+        void erase_balances(node_ptr* _root, node_ptr x){
+            node_ptr brother;
+            while (x != *_root && x->isBlack){
+                if (x == x->parent->left){
+                    brother = x->parent->right;
+                    //case 1
+                    if (!brother->isBlack){
+                        brother->isBlack = true;
+                        x->parent->isBlack = false;
+                        rotate_left(x->parent, _root);
+                        brother = x->parent->right;
+                    }
+                    //case 2
+                    if (brother->left->isBlack && brother->right->isBlack){
+                        brother->isBlack = false;
+                        x = x->parent;
+                    }
+                    else{
+                        //case 3
+                        if (brother->right->isBlack){
+                            brother->left->isBlack = true;
+                            brother->isBlack = false;
+                            rotate_right(brother, _root);
+                            brother = x->parent->right;
+                        }
+                        //case 4
+                        brother->isBlack = x->parent->isBlack;
+                        x->parent->isBlack = true;
+                        brother->right->isBlack = true;
+                        rotate_left(x->parent, _root);
+                        x = *_root;
+                    }
+                }
+                else{
+                    brother = x->parent->left;
+                    //case 1
+                    if (!brother->isBlack){
+                        brother->isBlack = true;
+                        x->parent->isBlack = false;
+                        rotate_right(x->parent, _root);
+                        brother = x->parent->left;
+                    }
+                    //case 2
+                    if (brother->right->isBlack && brother->left->isBlack){
+                        brother->isBlack = false;
+                        x = x->parent;
+                    }
+                    else{
+                        //case 3
+                        if (brother->left->isBlack){
+                            brother->right->isBlack = true;
+                            brother->isBlack = false;
+                            rotate_left(brother, _root);
+                            brother = x->parent->left;
+                        }
+                        //case 4
+                        brother->isBlack = x->parent->isBlack;
+                        x->parent->isBlack = true;
+                        brother->left->isBlack = true;
+                        rotate_right(x->parent, _root);
+                        x = *_root;
+                    }
+                }
             }
         }
 

@@ -2,9 +2,7 @@
 
 namespace ft {
 
-    template< class T >
-    struct is_integral {static const bool value = false;};
-
+    template< class T >struct is_integral {static const bool value = false;};
     template<> struct is_integral<bool> {static const bool value = true;};
     template<> struct is_integral<char> {static const bool value = true;};
     template<> struct is_integral<wchar_t> {static const bool value = true;};
