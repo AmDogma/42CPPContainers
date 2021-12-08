@@ -18,6 +18,44 @@ int main() {
     ft::map<int, std::string> myMap;
 
 
+
+//upper and lower bound
+    std::map<int,int> mymmap;
+    std::map<int,int>::iterator itloww,itupp;
+
+    mymmap[11]=11;
+    mymmap[22]=22;
+    mymmap[33]=33;
+    mymmap[44]=44;
+    mymmap[55]=55;
+
+    itloww=mymmap.lower_bound (56);  // itlow points to b
+    itupp=mymmap.upper_bound (55);   // itup points to e (not d!)
+
+    if (itloww != mymmap.end())
+        std::cout << itloww->first << " => " << " itlowww " << '\n';
+    if (itupp != mymmap.end())
+        std::cout << itupp->first << " => " << "itupppp" << '\n';
+
+    ft::map<int,int> mymap;
+    ft::map<int,int>::iterator itlow,itup;
+
+    mymap[11]=11;
+    mymap[22]=22;
+    mymap[33]=33;
+    mymap[44]=44;
+    mymap[55]=55;
+
+    itlow=mymap.lower_bound (56);  // itlow points to b
+    itup=mymap.upper_bound (55);   // itup points to e (not d!)
+
+    if (itlow != mymap.end())
+        std::cout << itlow->first << " => " << " itlow 12" << '\n';
+    std::cout << itup->first << " => " << "itup" << '\n';
+//for ( ft::map<int,int>::iterator itlow = mymap.begin(); itlow != mymap.end(); ++itlow)
+//    std::cout << itlow->first << " => " << " itlow 12" << '\n';
+
+
 //    std::map<int, std::string>::iterator rIt(realMap.begin());
 //    *rIt =
 
@@ -85,19 +123,19 @@ int main() {
 //
 //    myMap.erase(9998);
 //
-    for (int i = 30; i < 100; i +=  1)
-        myMap.insert(ft::make_pair(i, "1"));
-
-    std::cout << std::endl << "result is " << myMap.size() << std::endl;
-
-    myMap.erase(myMap.begin(), ((--myMap.end())));
-
-//    ft::map<int, std::string>::iterator myIt(myMap.begin());
-//    for (; myIt != myMap.end(); ++myIt) {
-//        std::cout << (*(myIt)).first << "\t";
-//    }
-//    ft::map<int, std::string> copymap(myMap);
-    std::cout << std::endl << "result is " << myMap.size() << std::endl;
+//    for (int i = 30; i < 1000000; i +=  1)
+//        myMap.insert(ft::make_pair(i, "1"));
+//
+//    std::cout << std::endl << "result is " << myMap.size() << std::endl;
+//
+//    myMap.erase(myMap.begin(), ((--myMap.end())));
+//
+////    ft::map<int, std::string>::iterator myIt(myMap.begin());
+////    for (; myIt != myMap.end(); ++myIt) {
+////        std::cout << (*(myIt)).first << "\t";
+////    }
+////    ft::map<int, std::string> copymap(myMap);
+//    std::cout << std::endl << "result is " << myMap.size() << std::endl;
 
 
 //value and key compare

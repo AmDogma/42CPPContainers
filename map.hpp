@@ -29,7 +29,6 @@ namespace ft {
         typedef ft::node<const Key, T> node;
         typedef typename Alloc::template rebind<node>::other node_allocator_type;
         typedef RBTree<const Key, T, key_compare, node_allocator_type> tree_type;
-//        typedef typename tree_type::node node;
         typedef typename tree_type::node_ptr node_ptr;
         tree_type	_tree;
         node_ptr	_root;
@@ -139,11 +138,9 @@ namespace ft {
         }
 
         void erase (iterator position) {
-//            bool res = _tree.erase(&_root->parent, position->first);
-//            if (res)
-//                --_size;
-            _tree.erase(&_root->parent, position->first);
-            --_size;
+            bool res = _tree.erase(&_root->parent, position->first);
+            if (res)
+                --_size;
         }
 
         size_type erase (const key_type& k) {
@@ -154,26 +151,8 @@ namespace ft {
         }
 
         void erase (iterator first, iterator last) {
-//            node_ptr temp = _tree.find_node(_root->parent, first->first), temp2;
-//            --last;
-//            while (temp->pair.first != last->first)
-//            {
-//                temp2 = _tree.find_big(temp, &_root->parent);
-//                _tree.erase(&_root->parent, temp);
-//                temp = temp2;
-//            }
-//            _tree.erase(&_root->parent, temp);
-
-            node_ptr temp = NULL;
             while ( first != last)
-            {
-                temp = first.node();
-                ++first;
-                _tree.erase(&_root->parent, temp);
-                --_size;
-            }
-
-//                erase(first++);
+                erase(first++);
         }
 
         void swap (map& x) {
@@ -215,55 +194,27 @@ namespace ft {
         }
 
         iterator lower_bound (const key_type& k) {
-//            node_ptr tmp = _tree.min_node(_root);
-//            while (tmp && k > tmp->pair.first)
-//                tmp = _tree.find_big(tmp, _root);
-//            return iterator(_root, tmp);
-            iterator last = end();
-            for (iterator first = begin(); first != last; ++first){
-                if(!_k_comp(first->first, k))
-                    return (first);
-            }
-            return (last);
+            return (iterator(_root, _tree.lower(_root->parent, k)));
         }
 
         const_iterator lower_bound (const key_type& k) const {
-//            node_ptr tmp = _tree.min_node(_root);
-//            while (tmp && k > tmp->pair.first)
-//                tmp = _tree.find_big(tmp, _root);
-//            return const_iterator(_root, tmp);
-            const_iterator last = end();
-            for (const_iterator first = begin(); first != last; ++first){
-                if(!_k_comp(first->first, k))
-                    return (first);
-            }
-            return (last);
+            return (const_iterator(_root, _tree.lower(_root->parent, k)));
         }
 
         iterator upper_bound (const key_type& k) {
-//            node_ptr tmp = _tree.min_node(_root);
-//            while (tmp && k >= tmp->pair.first)
-//                tmp = _tree.find_big(tmp, _root);
-//            return iterator(_root, tmp);
-            iterator last = end();
-            for (iterator first = begin(); first != last; ++first){
-                if(_k_comp(k, first->first))
-                    return (first);
-            }
-            return (last);
+            node_ptr temp = _tree.lower(_root->parent, k);
+            iterator res(_root, temp);
+            if (temp && temp->pair.first == k)
+                 ++res;
+            return iterator(res);
         }
 
         const_iterator upper_bound (const key_type& k) const {
-//            node_ptr tmp = _tree.min_node(_root);
-//            while (tmp && k >= tmp->pair.first)
-//                tmp = _tree.find_big(tmp, _root);
-//            return const_iterator(_root, tmp);
-            const_iterator last = end();
-            for (const_iterator first = begin(); first != last; ++first){
-                if(_k_comp(k, first->first))
-                    return (first);
-            }
-            return (last);
+            node_ptr temp = _tree.lower(_root->parent, k);
+            iterator res(_root, temp);
+            if (temp && temp->pair.first == k)
+                ++res;
+            return const_iterator(res);
         }
 
         ft::pair<iterator, iterator> equal_range (const key_type& k) {

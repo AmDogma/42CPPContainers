@@ -66,6 +66,25 @@ namespace ft {
             return tmp;
         }
 
+        node_ptr	lower(node_ptr root, first_type& key) const {
+            node_ptr tmp = NULL;
+            while (root) {
+                if (_compare(root->pair.first, key)) // value < key
+                    root = root->right;
+                else // value >= key
+                {
+                    if (root->left) {
+                        tmp = lower(root->left, key);
+                        if (tmp)
+                            root = tmp;
+                        break;
+                    } else
+                        break;
+                }
+            }
+            return root;
+        }
+
         node_ptr	find_big(node_ptr n, node_ptr* root) const {
             if (!n)
                 return NULL;
@@ -87,6 +106,8 @@ namespace ft {
                 n = n->parent;
             return n->parent;
         }
+
+
 
         void	clear(node_ptr* root) {
             if (*root)
@@ -234,28 +255,6 @@ namespace ft {
             return false;
         }
 
-        void	erase(node_ptr* root, node_ptr remove) {
-//            node_ptr	remove = find_node(*root, key);
-            if (remove) {
-                node_ptr    replace = NULL;
-                if (remove->left)
-                    replace = erase_left(remove, root);
-                else if (remove->right)
-                    replace = erase_right(remove, root);
-                else
-                    erase_not_child(remove, root);
-                if (replace)
-                    swap_p(remove, replace);
-                if (remove == *root) {
-                    if (replace)
-                        *root = replace;
-                    else
-                        *root = NULL;
-                }
-                delete_node(remove);
-            }
-        }
-
         node_ptr	erase_left(node_ptr some, node_ptr* root) {
             node_ptr	replace = max_node(some->left);
             if (replace) {
@@ -320,7 +319,8 @@ namespace ft {
             node_ptr	right;
             node_ptr	left;
             node_ptr	brother;
-            while (some) {
+
+            while (some != *root && some->isBlack) {
                 brother = some->right; //same
                 if (brother) {
                     right = brother->right;
@@ -359,29 +359,31 @@ namespace ft {
             }
         }
 
-        void	rotate_left(node_ptr some, node_ptr* root) {
-            node_ptr	right = some->right;
-            right->parent = some->parent;
-            if (right->parent) {
-                if (right->parent->right == some)
-                    right->parent->right = right;
+        void	rotate_left(node_ptr node, node_ptr* root) {
+            node_ptr	y = node->right; // y
+
+            y->parent = node->parent;
+
+            if (y->parent) {
+                if (y->parent->right == node)
+                    y->parent->right = y;
                 else
-                    right->parent->left = right;
+                    y->parent->left = y;
             }
-            some->parent = right;
-            some->right = right->left;
-            if (some->right) {
-                if (some->right->parent == right)
-                    some->right->parent = some;
+            node->parent = y;
+            node->right = y->left;
+            if (node->right) {
+                if (node->right->parent == y)
+                    node->right->parent = node;
                 else
-                    some->right->parent = some;
+                    node->right->parent = node;
             }
-            right->left = some;
-            bool	color = some->isBlack;
-            some->isBlack = right->isBlack;
-            right->isBlack = color;
-            if (!right->parent)
-                *root = right;
+            y->left = node;
+            bool	color = node->isBlack;
+            node->isBlack = y->isBlack;
+            y->isBlack = color;
+            if (!y->parent)
+                *root = y;
         }
 
         void	rotate_right(node_ptr some, node_ptr* root) {
@@ -427,9 +429,10 @@ namespace ft {
 //        }
 //        void 	rotate_left(node_ptr node, node_ptr* _root){
 //            node_ptr y;
-//
 //            y = node->right;
+
 //            node->right = y->left;
+
 //            if (y->left)
 //                y->left->parent = node;
 //            y->parent = node->parent;
@@ -443,22 +446,23 @@ namespace ft {
 //            node->parent = y;
 //        }
 
-        void erase_balances(node_ptr* _root, node_ptr x){
+        void erase_balances(node_ptr* _root, node_ptr some){
             node_ptr brother;
-            while (x != *_root && x->isBlack){
-                if (x == x->parent->left){
-                    brother = x->parent->right;
+
+            while (some != *_root && some->isBlack){
+                if (some == some->parent->left){
+                    brother = some->parent->right;
                     //case 1
                     if (!brother->isBlack){
                         brother->isBlack = true;
-                        x->parent->isBlack = false;
-                        rotate_left(x->parent, _root);
-                        brother = x->parent->right;
+                        some->parent->isBlack = false;
+                        rotate_left(some->parent, _root);
+                        brother = some->parent->right;
                     }
                     //case 2
                     if (brother->left->isBlack && brother->right->isBlack){
                         brother->isBlack = false;
-                        x = x->parent;
+                        some = some->parent;
                     }
                     else{
                         //case 3
@@ -466,29 +470,29 @@ namespace ft {
                             brother->left->isBlack = true;
                             brother->isBlack = false;
                             rotate_right(brother, _root);
-                            brother = x->parent->right;
+                            brother = some->parent->right;
                         }
                         //case 4
-                        brother->isBlack = x->parent->isBlack;
-                        x->parent->isBlack = true;
+                        brother->isBlack = some->parent->isBlack;
+                        some->parent->isBlack = true;
                         brother->right->isBlack = true;
-                        rotate_left(x->parent, _root);
-                        x = *_root;
+                        rotate_left(some->parent, _root);
+                        some = *_root;
                     }
                 }
                 else{
-                    brother = x->parent->left;
+                    brother = some->parent->left;
                     //case 1
                     if (!brother->isBlack){
                         brother->isBlack = true;
-                        x->parent->isBlack = false;
-                        rotate_right(x->parent, _root);
-                        brother = x->parent->left;
+                        some->parent->isBlack = false;
+                        rotate_right(some->parent, _root);
+                        brother = some->parent->left;
                     }
                     //case 2
                     if (brother->right->isBlack && brother->left->isBlack){
                         brother->isBlack = false;
-                        x = x->parent;
+                        some = some->parent;
                     }
                     else{
                         //case 3
@@ -496,14 +500,14 @@ namespace ft {
                             brother->right->isBlack = true;
                             brother->isBlack = false;
                             rotate_left(brother, _root);
-                            brother = x->parent->left;
+                            brother = some->parent->left;
                         }
                         //case 4
-                        brother->isBlack = x->parent->isBlack;
-                        x->parent->isBlack = true;
+                        brother->isBlack = some->parent->isBlack;
+                        some->parent->isBlack = true;
                         brother->left->isBlack = true;
-                        rotate_right(x->parent, _root);
-                        x = *_root;
+                        rotate_right(some->parent, _root);
+                        some = *_root;
                     }
                 }
             }
