@@ -85,7 +85,7 @@ int main() {
 //
 //    myMap.erase(9998);
 //
-    for (int i = 30; i < 100000; i +=  1)
+    for (int i = 30; i < 100; i +=  1)
         myMap.insert(ft::make_pair(i, "1"));
 
     std::cout << std::endl << "result is " << myMap.size() << std::endl;

@@ -165,20 +165,20 @@ namespace ft {
                             delete_node(new_node);
                         return false;
                     }
-                    else if (_compare(tmp->pair.first, new_node->pair.first)) {
-                        if (tmp->right)
-                            tmp = tmp->right;
+                    else if (_compare(new_node->pair.first, tmp->pair.first)) {
+                        if (tmp->left)
+                            tmp = tmp->left;
                         else {
-                            tmp->right = new_node;
+                            tmp->left = new_node;
                             new_node->parent = tmp;
                             break;
                         }
                     }
                     else {
-                        if (tmp->left)
-                            tmp = tmp->left;
+                        if (tmp->right)
+                            tmp = tmp->right;
                         else {
-                            tmp->left = new_node;
+                            tmp->right = new_node;
                             new_node->parent = tmp;
                             break;
                         }

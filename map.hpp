@@ -26,9 +26,11 @@ namespace ft {
 
     private:
         typedef ft::pair<const Key, T> pair;
-        typedef RBTree<const Key, T, key_compare> tree_type;
-        typedef typename tree_type::node node;
-        typedef node* node_ptr;
+        typedef ft::node<const Key, T> node;
+        typedef typename Alloc::template rebind<node>::other node_allocator_type;
+        typedef RBTree<const Key, T, key_compare, node_allocator_type> tree_type;
+//        typedef typename tree_type::node node;
+        typedef typename tree_type::node_ptr node_ptr;
         tree_type	_tree;
         node_ptr	_root;
         allocator_type	_alloc;
@@ -292,7 +294,7 @@ namespace ft {
 
     template <class Key, class T, class Compare, class Allocator>
     bool operator< (const map<Key,T,Compare,Allocator>& x, const map<Key,T,Compare,Allocator>& y) {
-        return ft::lexicographical_compare( x.begin(), x.end(), y.begin(), y.end() ) && x != y;
+        return ft::lexicographical_compare( x.begin(), x.end(), y.begin(), y.end()) && x != y;
     }
     
     template <class Key, class T, class Compare, class Allocator>
