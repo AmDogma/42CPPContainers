@@ -74,7 +74,7 @@ namespace ft {
 
         map_iterator	operator++(int) {
             map_iterator<Val>	tmp(*this);
-            ++(*this); // ??
+            ++(*this);
             return tmp;
         }
 
@@ -256,7 +256,6 @@ namespace ft {
         typedef typename iterator_type::difference_type    difference_type;
         typedef typename iterator_type::pointer            pointer;
         typedef typename iterator_type::reference          reference;
-//        typedef typename iterator_type::iterator_category  iterator_category; // maybe from traits category std::
         typedef	std::random_access_iterator_tag iterator_category;
 
         iterator_vector() : _point(T()) {}

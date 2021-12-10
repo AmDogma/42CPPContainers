@@ -34,7 +34,7 @@ namespace ft {
 
         explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _size(0), _capacity(0), _alloc(alloc), _pointer(0)  {
             if (n < 0)
-                throw std::logic_error("Insert position fail!"); // do we care? //throw std::out_of_range("N > SIZE");
+                throw std::logic_error("Insert position fail!");
             this->insert(begin(), n, val);
         }
 
@@ -208,8 +208,8 @@ namespace ft {
         iterator insert (iterator position, const value_type& val) {
             size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
-                throw std::logic_error("Insert position fail!"); // do we care
-            reserve(_size + 1); // для ускорения возможно нужно сделать обе операции тут индивидуально
+                throw std::logic_error("Insert position fail!");
+            reserve(_size + 1);
             for (size_type i = 0; _size - i != dis; ++i) {
                 _alloc.construct(_pointer + _size - i, _pointer[_size - i - 1]);
                 _alloc.destroy(_pointer + _size - i - 1);
@@ -222,8 +222,8 @@ namespace ft {
         void insert (iterator position, size_type n, const value_type& val) {
             size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
-                throw std::logic_error("Insert position fail!"); // do we care?
-            reserve(_size + n); // для ускорения возможно нужно сделать обе операции тут индивидуально
+                throw std::logic_error("Insert position fail!");
+            reserve(_size + n);
             for (size_type i = 0; _size - i != dis; ++i) {
                 _alloc.construct(_pointer + _size - 1 - i + n, _pointer[_size - i - 1]);
                 _alloc.destroy(_pointer + _size - i - 1);
@@ -239,7 +239,7 @@ namespace ft {
             size_type n = static_cast<size_type>(std::distance(first, last));
             size_type dis = static_cast<size_type>(std::distance(begin(), position));
             if (position > end() || position < begin())
-                throw std::logic_error("Insert position fail!"); // do we care?
+                throw std::logic_error("Insert position fail!");
             pointer temp = _alloc.allocate(n);
             try {
                 for (size_type i = 0; i < n; i++)
@@ -269,7 +269,6 @@ namespace ft {
             if (_size == 0)
                 return end();
             _alloc.destroy(_pointer + dis);
-//            std::uninitialized_copy(position + 1, end(), position);
             for (size_type i = 0; dis + i != _size; ++i) {
                 _alloc.construct(_pointer + dis + i, _pointer[dis + i + 1]);
                 _alloc.destroy(_pointer + dis + i + 1);

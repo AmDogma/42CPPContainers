@@ -7,14 +7,8 @@ namespace ft {
     template <class Value, class Compare, class Alloc = std::allocator<Value> >
     class RBTree {
     public:
-//        typedef Key first_type;
-//        typedef Val second_type;
         typedef Alloc allocator_type;
-//        typedef typename allocator_type::value_type node;
-//        typedef ft::pair<Value> pair;
-//        typedef ft::node<Value> node;
         typedef typename allocator_type::pointer node_ptr;
-//        typedef node* node_ptr;
     private:
         allocator_type	_alloc;
         Compare _compare;

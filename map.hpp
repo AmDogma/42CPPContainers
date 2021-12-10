@@ -6,14 +6,11 @@
 
 namespace ft {
 
-    template <class Key,                                     // map::key_type
-            class T,                                       // map::mapped_type
-            class Compare = std::less<Key>,                     // map::key_compare
-            class Alloc = std::allocator<ft::pair<const Key,T> > >    // map::allocator_type
+    template <class Key, class T, class Compare = std::less<Key>,
+            class Alloc = std::allocator<ft::pair<const Key,T> > >
     class map {
     public:
         typedef Key key_type;
-//        typedef const Key const_key_type;
         typedef T mapped_type;
         typedef Compare key_compare;
         typedef ft::pair<const Key, T> value_type;
@@ -124,7 +121,7 @@ namespace ft {
         }
 
         size_type max_size() const {
-            return (_tree.max_size()); // ?
+            return (_tree.max_size());
         }
 
         mapped_type& operator[] (const key_type& k) {
@@ -148,7 +145,7 @@ namespace ft {
         }
 
         template <class InputIterator>
-        void insert (InputIterator first, InputIterator last) { // typename ft::enable_if < !ft::is_integral<InputIterator>::value, char>::type* = 0
+        void insert (InputIterator first, InputIterator last) {
             for (; first != last; ++first)
                 insert(*first);
         }
