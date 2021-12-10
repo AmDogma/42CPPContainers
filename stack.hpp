@@ -5,10 +5,10 @@
 namespace ft{
     template <class T, class Container = ft::vector<T> >
     class stack {
+    public:
         typedef T   value_type;
         typedef Container   container_type;
         typedef typename container_type::size_type  size_type;
-    public:
         explicit stack (const container_type& ctnr = container_type()) : _container(ctnr) {}
         size_type size() const{
             return (_container.size());
@@ -75,4 +75,5 @@ namespace ft{
     bool operator>= (const stack<T,Container>& lhs, const stack<T,Container>& rhs) {
         return lhs._container >= rhs._container;
     }
+
 }

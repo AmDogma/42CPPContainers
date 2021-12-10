@@ -1,7 +1,6 @@
 #pragma once
 #include "RBTree.hpp"
 #include "iterator.hpp"
-#include "lex_n_equal.hpp"
 #include "utils.hpp"
 
 namespace ft {
@@ -64,7 +63,7 @@ namespace ft {
         ~map() {
             _tree.clear(&_root->parent);
             _tree.clear(&_root);
-        };
+        }
 
         map (const map& other) : _root(NULL), _alloc(other._alloc), _k_comp(other._k_comp), _size(0) {
             _root = _tree.create_node(value_type());
