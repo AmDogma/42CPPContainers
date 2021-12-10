@@ -2,6 +2,10 @@
 
 namespace ft {
 
+    template<class T> struct remove_const { typedef T type; };
+
+    template<class T> struct remove_const <const T> { typedef T type; };
+
     template< class T >struct is_integral {static const bool value = false;};
     template<> struct is_integral<bool> {static const bool value = true;};
     template<> struct is_integral<char> {static const bool value = true;};

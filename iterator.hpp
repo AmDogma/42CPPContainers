@@ -2,36 +2,45 @@
 #include <iostream>
 #include "iterator_traits.hpp"
 #include "RBTree.hpp"
+#include "utils.hpp"
 
 namespace ft {
 
-//    template <class Iterator>
-//    typename iterator_traits<Iterator>::iterator_category	iterator_category(Iterator iter) {
-//        return typename iterator_traits<Iterator>::iterator_category();
-//    }
-
-    template <class P>
+    template <class Val>
     class   map_iterator {
     public:
-        typedef typename ft::iterator_traits<P*>::value_type 		value_type;
-        typedef typename ft::iterator_traits<P*>::reference 		reference;
-        typedef typename ft::iterator_traits<P*>::pointer			pointer;
-        typedef typename ft::iterator_traits<P*>::difference_type	difference_type;
-        typedef typename P::first_type first_type;
-        typedef typename P::second_type second_type;
-        typedef ft::node<first_type, second_type>* node_ptr;
-        typedef ft::RBTree<first_type, second_type> tree;
+        typedef typename ft::iterator_traits<Val*>::value_type 		value_type;
+        typedef typename ft::iterator_traits<Val*>::reference 		reference;
+        typedef typename ft::iterator_traits<Val*>::pointer			pointer;
+        typedef typename ft::iterator_traits<Val*>::difference_type	difference_type;
         typedef std::bidirectional_iterator_tag iterator_category;
+        typedef ft::node<typename ft::remove_const<Val>::type >* node_ptr;
     private:
-        tree _tree;
         node_ptr _root;
         node_ptr _base;
+
+        node_ptr	min_node(node_ptr some) const {
+            if (some) {
+                while (some->left)
+                    some = some->left;
+            }
+            return some;
+        }
+
+        node_ptr	max_node(node_ptr some) const {
+            if (some) {
+                while (some->right)
+                    some = some->right;
+            }
+            return some;
+        }
+
     public:
-        map_iterator() : _tree(tree()), _root(NULL), _base(NULL) {}
+        map_iterator() : _root(NULL), _base(NULL) {}
 
-        explicit map_iterator(const node_ptr root, const node_ptr node) : _tree(tree()), _root(root), _base(node) {} // static_cast<pointer>(node)
+        explicit map_iterator(const node_ptr& root, const node_ptr& node) : _root(root), _base(node) {} // static_cast<pointer>(node)
 
-        map_iterator(const map_iterator& other) : _tree(other._tree), _root(other._root), _base(other._base) {}
+        map_iterator(const map_iterator& other) : _root(other._root), _base(other._base) {}
 
         ~map_iterator() {}
 
@@ -40,58 +49,64 @@ namespace ft {
             return map_iterator<const Type>(_root, _base);
         }
 
-        P&	operator*() const {
-            return _base->pair;
+        reference 	operator*() const {
+            return (_base->pair);
         }
 
-        P*	operator->() const {
+        pointer 	operator->() const {
             return &(_base->pair);
         }
 
         map_iterator&	operator++() {
-            _base = _tree.find_big(_base, &_root->parent);
+            if (!_base)
+                return *this;
+            else if (_base->right)
+                _base =  min_node(_base->right);
+            else if (_base == max_node(_root->parent))
+                _base = NULL;
+            else {
+                while (_base->parent->right == _base)
+                    _base = _base->parent;
+                _base = _base->parent;
+            }
             return *this;
         }
 
         map_iterator	operator++(int) {
-            map_iterator<P>	tmp(*this);
-            _base = _tree.find_big(_base, &_root->parent);
+            map_iterator<Val>	tmp(*this);
+            ++(*this); // ??
             return tmp;
         }
 
         map_iterator&	operator--() {
-            _base = _tree.find_low(_base, &_root->parent);
+            if (!_base)
+                _base = max_node(_root->parent);
+            else if (_base->left)
+                _base =  max_node(_base->left);
+            else {
+                while (_base->parent->left == _base)
+                    _base = _base->parent;
+                _base = _base->parent;
+            }
             return *this;
         }
 
         map_iterator	operator--(int) {
-            map_iterator<P>	tmp(*this);
-            _base = _tree.find_low(_base, &_root->parent);
+            map_iterator<Val>	tmp(*this);
+            --(*this);
             return tmp;
         }
 
         template <class Iterator1, class Iterator2>
         friend  bool	operator==(const map_iterator<Iterator1>& A, const map_iterator<Iterator2>& B);
 
-//        template <class Iterator>
-//        friend bool	operator==(const map_iterator<Iterator>& A, const map_iterator<Iterator>& B);
-
     };
-
-//    template <class Iterator>
-//    bool	operator==(const map_iterator<Iterator>& A, const map_iterator<Iterator>& B) {
-//        return A._base == B._base;
-//    }
 
     template <class Iterator1, class Iterator2>
     bool	operator==(const map_iterator<Iterator1>& A, const map_iterator<Iterator2>& B) {
         return A._base == B._base;
     }
 
-//    template <class Iterator>
-//    bool	operator!=(const map_iterator<Iterator>& A, const map_iterator<Iterator>& B) {
-//        return !(A == B);
-//    }
 
     template <class Iterator1, class Iterator2>
     bool	operator!=(const map_iterator<Iterator1>& A, const map_iterator<Iterator2>& B) {

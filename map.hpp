@@ -13,23 +13,37 @@ namespace ft {
     class map {
     public:
         typedef Key key_type;
+//        typedef const Key const_key_type;
         typedef T mapped_type;
         typedef Compare key_compare;
         typedef ft::pair<const Key, T> value_type;
-        typedef std::less<ft::pair<const Key, T> >	value_compare;
         typedef Alloc allocator_type;
         typedef std::size_t size_type;
         typedef ft::map_iterator<value_type>	iterator;
         typedef ft::map_iterator<const value_type>	const_iterator;
         typedef ft::reverse_iterator<iterator>	reverse_iterator;
         typedef	ft::reverse_iterator<const_iterator>	const_reverse_iterator;
-
     private:
-        typedef ft::pair<const Key, T> pair;
-        typedef ft::node<const Key, T> node;
-        typedef typename Alloc::template rebind<node>::other node_allocator_type;
-        typedef RBTree<const Key, T, key_compare, node_allocator_type> tree_type;
-        typedef typename tree_type::node_ptr node_ptr;
+        class pair_compare {
+            key_compare _compare;
+
+        public:
+            pair_compare(const key_compare & compare = key_compare()) : _compare(compare) {}
+
+            bool operator()(const value_type & x, const value_type & y) const{
+                return (_compare(x.first, y.first));
+            }
+        };
+
+        value_type bind(const Key& key) { return ft::make_pair(key, mapped_type()); }
+        value_type bind(const Key& key) const { return ft::make_pair(key, mapped_type()); }
+
+    public:
+        typedef pair_compare value_compare;
+    private:
+        typedef typename Alloc::template rebind<node<value_type> >::other node_allocator_type;
+        typedef RBTree<value_type , pair_compare, node_allocator_type> tree_type;
+        typedef typename ft::node<value_type>* node_ptr;
         tree_type	_tree;
         node_ptr	_root;
         allocator_type	_alloc;
@@ -114,20 +128,22 @@ namespace ft {
         }
 
         mapped_type& operator[] (const key_type& k) {
-            insert(ft::make_pair(k, mapped_type()));
-            return _tree.find_node(_root->parent, k)->pair.second;
+            bool res = _tree.insert(&_root->parent, _tree.create_node(bind(k)));
+            _size += res;
+            node_ptr ret = _tree.find_node(_root->parent, bind(k));
+            return ret->pair.second;
         }
 
         ft::pair<iterator, bool> insert (const value_type& val) {
             bool res = _tree.insert(&_root->parent, _tree.create_node(val));
             _size += res;
-            node_ptr forIter = _tree.find_node(_root->parent, val.first);
+            node_ptr forIter = _tree.find_node(_root->parent, val);
             return ft::pair<iterator, bool>(iterator(_root, forIter), res);
         }
 
         iterator insert (iterator, const value_type& val) {
             _size += _tree.insert(&_root->parent, _tree.create_node(val));
-            node_ptr forIter = _tree.find_node(_root->parent, val.first);
+            node_ptr forIter = _tree.find_node(_root->parent, val);
             return iterator(_root, forIter);
         }
 
@@ -138,13 +154,13 @@ namespace ft {
         }
 
         void erase (iterator position) {
-            bool res = _tree.erase(&_root->parent, position->first);
+            bool res = _tree.erase(&_root->parent, *position);
             if (res)
                 --_size;
         }
 
         size_type erase (const key_type& k) {
-            bool res = (bool)_tree.erase(&_root->parent, k);
+            bool res = (bool)_tree.erase(&_root->parent, bind(k));
             if (res)
                 --_size;
             return res;
@@ -178,31 +194,31 @@ namespace ft {
         }
 
         iterator find (const key_type& k) {
-            node_ptr forIter = _tree.find_node(_root->parent, k);
+            node_ptr forIter = _tree.find_node(_root->parent, bind(k));
             return iterator(_root, forIter);
         }
 
         const_iterator find (const key_type& k) const {
-            node_ptr forIter = _tree.find_node(_root->parent, k);
+            node_ptr forIter = _tree.find_node(_root->parent, bind(k));
             return const_iterator(_root, forIter);
         }
 
-        size_type count (const key_type& k) const { // не работает проверка, нужно доделать
-            if (_tree.find_node(_root->parent, k))
+        size_type count (const key_type& k) const {
+            if (_tree.find_node(_root->parent, bind(k)))
                 return 1;
             return 0;
         }
 
         iterator lower_bound (const key_type& k) {
-            return (iterator(_root, _tree.lower(_root->parent, k)));
+            return (iterator(_root, _tree.lower(_root->parent, bind(k))));
         }
 
         const_iterator lower_bound (const key_type& k) const {
-            return (const_iterator(_root, _tree.lower(_root->parent, k)));
+            return (const_iterator(_root, _tree.lower(_root->parent, bind(k))));
         }
 
         iterator upper_bound (const key_type& k) {
-            node_ptr temp = _tree.lower(_root->parent, k);
+            node_ptr temp = _tree.lower(_root->parent, bind(k));
             iterator res(_root, temp);
             if (temp && temp->pair.first == k)
                  ++res;
@@ -210,7 +226,7 @@ namespace ft {
         }
 
         const_iterator upper_bound (const key_type& k) const {
-            node_ptr temp = _tree.lower(_root->parent, k);
+            node_ptr temp = _tree.lower(_root->parent, bind(k));
             iterator res(_root, temp);
             if (temp && temp->pair.first == k)
                 ++res;

@@ -20,38 +20,38 @@ int main() {
 
 
 //upper and lower bound
-    std::map<int,int> mymmap;
-    std::map<int,int>::iterator itloww,itupp;
-
-    mymmap[11]=11;
-    mymmap[22]=22;
-    mymmap[33]=33;
-    mymmap[44]=44;
-    mymmap[55]=55;
-
-    itloww=mymmap.lower_bound (56);  // itlow points to b
-    itupp=mymmap.upper_bound (55);   // itup points to e (not d!)
-
-    if (itloww != mymmap.end())
-        std::cout << itloww->first << " => " << " itlowww " << '\n';
-    if (itupp != mymmap.end())
-        std::cout << itupp->first << " => " << "itupppp" << '\n';
-
-    ft::map<int,int> mymap;
-    ft::map<int,int>::iterator itlow,itup;
-
-    mymap[11]=11;
-    mymap[22]=22;
-    mymap[33]=33;
-    mymap[44]=44;
-    mymap[55]=55;
-
-    itlow=mymap.lower_bound (56);  // itlow points to b
-    itup=mymap.upper_bound (55);   // itup points to e (not d!)
-
-    if (itlow != mymap.end())
-        std::cout << itlow->first << " => " << " itlow 12" << '\n';
-    std::cout << itup->first << " => " << "itup" << '\n';
+//    std::map<int,int> mymmap;
+//    std::map<int,int>::iterator itloww,itupp;
+//
+//    mymmap[11]=11;
+//    mymmap[22]=22;
+//    mymmap[33]=33;
+//    mymmap[44]=44;
+//    mymmap[55]=55;
+//
+//    itloww=mymmap.lower_bound (53);  // itlow points to b
+//    itupp=mymmap.upper_bound (55);   // itup points to e (not d!)
+//
+//    if (itloww != mymmap.end())
+//        std::cout << itloww->first << " => " << " itlowww " << '\n';
+//    if (itupp != mymmap.end())
+//        std::cout << itupp->first << " => " << "itupppp" << '\n';
+//
+//    ft::map<int,int> mymap;
+//    ft::map<int,int>::iterator itlow,itup;
+//
+//    mymap[11]=11;
+//    mymap[22]=22;
+//    mymap[33]=33;
+//    mymap[44]=44;
+//    mymap[55]=55;
+//
+//    itlow=mymap.lower_bound (56);  // itlow points to b
+//    itup=mymap.upper_bound (54);   // itup points to e (not d!)
+//
+//    if (itlow != mymap.end())
+//        std::cout << itlow->first << " => " << " itlow 12" << '\n';
+//    std::cout << itup->first << " => " << "itup" << '\n';
 //for ( ft::map<int,int>::iterator itlow = mymap.begin(); itlow != mymap.end(); ++itlow)
 //    std::cout << itlow->first << " => " << " itlow 12" << '\n';
 
@@ -74,9 +74,9 @@ int main() {
 //    std::cout << myMap.max_size() << std::endl;
 
 //insert
-//    for (int i = 1; i < 8; i +=  1)
-//        myMap.insert(ft::make_pair(i, "1"));
-//    const ft::map<int, std::string> myMap2(myMap.begin(), myMap.end());
+    for (int i = 1; i < 8; i +=  1)
+        myMap.insert(ft::make_pair(i, "1"));
+    const ft::map<int, std::string> myMap2(myMap.begin(), myMap.end());
 //    ft::map<int, std::string>::const_iterator myIt2(myMap2.begin());
 //    ft::pair <ft::map<int, std::string>::iterator, bool> test = myMap.insert(ft::make_pair(222, "222"));
 //    std::cout << test.second << "result is " << test.first->first << "  " << test.first->second << std::endl;
@@ -146,14 +146,8 @@ int main() {
 //    ft::map<int, int> mp;
 //    std::map<int, int> m;
 //
-//    mp.insert(ft::make_pair(10, 10));
-//    if (mp.upper_bound(11) == mp.end())
-//        std::cout << "no" << std::endl;
-
-//    m.insert(std::make_pair(10, 10));
-//    if (m.upper_bound(11) == m.end())
-//        std::cout << "no" << std::endl;
-
+//
+//
 //    m.insert(std::make_pair(20, 20));
 //    m.insert(std::make_pair(30, 30));
 //    m.insert(std::make_pair(40, 40));
@@ -171,7 +165,27 @@ int main() {
 //    mp.insert(ft::make_pair(-10, 10));
 //    mp.insert(ft::make_pair(-20, 20));
 //    ft::map<int, int>::iterator IT(mp.begin());
+
+//    if (mp.upper_bound(11) == mp.end())
+//        std::cout << "no" << std::endl;
+//    else
+//        std::cout << mp.upper_bound(11)->first << std::endl;
 //
+//    if (m.upper_bound(11) == m.end())
+//        std::cout << "no" << std::endl;
+//    else
+//        std::cout << m.upper_bound(11)->first << std::endl;
+//
+//    if (mp.lower_bound(11) == mp.end())
+//        std::cout << "no" << std::endl;
+//    else
+//        std::cout << mp.upper_bound(11)->first << std::endl;
+//
+//    if (m.lower_bound(11) == m.end())
+//        std::cout << "no" << std::endl;
+//    else
+//        std::cout << m.upper_bound(11)->first << std::endl;
+
 //    ft::pair<ft::map<int, int>::iterator, ft::map<int, int>::iterator> res = mp.equal_range(20);
 //    std::pair<std::map<int, int>::iterator, std::map<int, int>::iterator> res1 = m.equal_range(20);
 //    if (res.first != mp.end()) {
@@ -202,8 +216,11 @@ int main() {
 //    std::cout << myMap.size() << std::endl;
 
 // iterators + reverse
-//    ft::map<int, std::string>::iterator myIt(myMap.begin());
+//    for (int i = 5; i > 0; i -=  1)
+//        myMap.insert(ft::make_pair(i, "1"));
+//    ft::map<int, std::string>::const_iterator myIt(myMap.begin());
 //    ft::map<int, std::string>::reverse_iterator myR(myMap.rbegin());
+
 //    for (; myIt != myMap.end(); ++myIt)
 //        std::cout << (*(myIt)).second << std::endl;
 //    for (; myR != myMap.rend(); ++myR)

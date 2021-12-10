@@ -2,6 +2,27 @@
 
 namespace ft {
 
+    template <class Value>
+    struct node {
+//        typedef K  first_type;
+//        typedef V  second_type;
+        Value pair;
+        node*	parent;
+        node*	left;
+        node*	right;
+        bool	isBlack;
+        node() : pair(Value()), parent(NULL), left(NULL), right(NULL), isBlack(false) {}
+        node(const Value& p_pair) : pair(p_pair), parent(NULL), left(NULL), right(NULL), isBlack(false) {}
+        node&	operator=(const node& node) {
+            pair = node.pair;
+            parent = node.parent;
+            left = node.left;
+            right = node.right;
+            isBlack = node.isBlack;
+            return *this;
+        }
+    };
+
     template<class Key, class Val>
     struct pair {
         typedef Key first_type;
@@ -15,7 +36,7 @@ namespace ft {
 
         pair(const first_type &a, const second_type &b) : first(a), second(b) {}
 
-        pair &operator=(const pair &pr) { // copy first if it const???
+        pair &operator=(const pair &pr) {
             first = pr.first;
             second = pr.second;
             return (*this);
@@ -57,25 +78,5 @@ namespace ft {
         return ft::pair<T1, T2>(x, y);
     }
 
-    template <class K, class V>
-    struct node {
-        typedef K  first_type;
-        typedef V  second_type;
-        ft::pair<first_type, second_type>	pair;
-        node*	parent;
-        node*	left;
-        node*	right;
-        bool	isBlack;
-        node() : parent(NULL), left(NULL), right(NULL), isBlack(false) {}
-        node(const ft::pair<first_type, second_type>& p_pair) : pair(p_pair), parent(NULL), left(NULL), right(NULL), isBlack(false) {}
-        node&	operator=(const node& node) {
-            pair = node.pair;
-            parent = node.parent;
-            left = node.left;
-            right = node.right;
-            isBlack = node.isBlack;
-            return *this;
-        }
-    };
 
 }
