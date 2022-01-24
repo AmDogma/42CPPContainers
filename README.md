@@ -11,6 +11,6 @@
 
 ## Информация
 
-http://www.lirmm.fr/~ducour/Doc-objets/ISO+IEC+14882-1998.pdf
-https://www.cplusplus.com/
-https://en.cppreference.com/w/
+* http://www.lirmm.fr/~ducour/Doc-objets/ISO+IEC+14882-1998.pdf
+* https://www.cplusplus.com/
+* https://en.cppreference.com/w/
